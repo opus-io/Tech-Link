@@ -1,12 +1,667 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="id">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Content Manager</title>
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <title>Admin - Tech-Link</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0a0a0c;
+      --bg2: #121212;
+      --bg3: #1A1A1A;
+      --border: #333;
+      --amber: #f59e0b;
+      --green: #22c55e;
+      --text: #e5e5e5;
+      --text2: #a1a1aa;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 21px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    /* Login */
+    .login-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 34px 21px;
+      border-radius: 8px;
+      margin-top: 10vh;
+      text-align: center;
+    }
+    .login-box h1 { font-size: 24px; margin-bottom: 21px; color: var(--amber); }
+    .login-box p { color: var(--text2); font-size: 12px; margin-bottom: 13px; }
+    .login-box input {
+      width: 100%;
+      max-width: 400px;
+      padding: 13px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      border-radius: 4px;
+      margin-bottom: 13px;
+    }
+    .login-box input:focus { outline: none; border-color: var(--amber); }
+    .login-box .help {
+      font-size: 11px;
+      color: var(--text2);
+      margin-bottom: 13px;
+    }
+    .login-box .help a { color: var(--amber); }
+    
+    /* Buttons */
+    .btn {
+      padding: 13px 34px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .btn:hover { border-color: var(--amber); color: var(--amber); }
+    .btn-primary { background: var(--amber); color: #000; border-color: var(--amber); font-weight: bold; }
+    .btn-primary:hover { background: #d97706; color: #000; }
+    .btn-danger { border-color: #ef4444; color: #ef4444; }
+    .btn-danger:hover { background: #ef4444; color: #fff; }
+    .btn-sm { padding: 8px 16px; font-size: 11px; }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 34px;
+      padding-bottom: 13px;
+      border-bottom: 1px solid var(--border);
+    }
+    .header h1 { font-size: 18px; color: var(--amber); }
+    .header .user-info { font-size: 11px; color: var(--text2); }
+    .header .logout { color: var(--text2); cursor: pointer; font-size: 11px; }
+    .header .logout:hover { color: var(--amber); }
+
+    /* Products */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 21px;
+    }
+    .toolbar .count { font-size: 12px; color: var(--text2); }
+
+    .product-list {
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+    }
+    .product-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 13px 21px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s;
+    }
+    .product-item:hover { border-color: var(--amber); }
+    .product-item .info h3 { font-size: 14px; color: var(--text); }
+    .product-item .info .meta {
+      font-size: 11px;
+      color: var(--text2);
+      margin-top: 4px;
+    }
+    .product-item .info .meta .featured-badge {
+      color: var(--amber);
+      margin-right: 8px;
+    }
+    .product-item .actions { display: flex; gap: 8px; }
+
+    /* Form Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 100;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 34px 21px;
+      overflow-y: auto;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 34px;
+      width: 100%;
+      max-width: 600px;
+      margin-top: 5vh;
+    }
+    .modal h2 { font-size: 18px; color: var(--amber); margin-bottom: 21px; }
+    .modal .field { margin-bottom: 13px; }
+    .modal .field label {
+      display: block;
+      font-size: 11px;
+      color: var(--text2);
+      margin-bottom: 4px;
+    }
+    .modal .field input,
+    .modal .field textarea,
+    .modal .field select {
+      width: 100%;
+      padding: 10px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 12px;
+      border-radius: 4px;
+    }
+    .modal .field input:focus,
+    .modal .field textarea:focus { outline: none; border-color: var(--amber); }
+    .modal .field textarea { min-height: 60px; resize: vertical; }
+    .modal .field.checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .modal .field.checkbox input { width: auto; }
+    .modal .field.checkbox label { margin-bottom: 0; cursor: pointer; }
+    .modal .field-row {
+      display: flex;
+      gap: 13px;
+    }
+    .modal .field-row .field { flex: 1; }
+    .modal .form-actions {
+      display: flex;
+      gap: 13px;
+      justify-content: flex-end;
+      margin-top: 21px;
+    }
+    .modal .sub-list { margin-top: 8px; }
+    .modal .sub-item {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .modal .sub-item input,
+    .modal .sub-item select { flex: 1; }
+    .modal .sub-item .btn-sm { flex: 0; }
+    .modal .add-sub { margin-top: 4px; }
+
+    /* Status */
+    .toast {
+      position: fixed;
+      bottom: 34px;
+      right: 34px;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 13px 21px;
+      border-radius: 4px;
+      font-size: 12px;
+      z-index: 200;
+      transition: all 0.3s;
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success { border-color: var(--green); }
+    .toast.error { border-color: #ef4444; }
+  </style>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3/dist/decap-cms.js"></script>
+  <div class="container" id="app">
+    <!-- Login -->
+    <div id="loginSection" class="login-box">
+      <h1>[ TECH-LINK ADMIN ]</h1>
+      <p>Masukkan GitHub Personal Access Token</p>
+      <input type="password" id="tokenInput" placeholder="ghp_xxxxx..." />
+      <div class="help">
+        Token perlu scope: <strong>repo</strong>
+        <br/>
+        <a href="https://github.com/settings/tokens" target="_blank">Buat token di sini</a>
+      </div>
+      <button class="btn btn-primary" onclick="login()">LOGIN</button>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboardSection" style="display:none">
+      <div class="header">
+        <div>
+          <h1>[ ADMIN ]</h1>
+          <div class="user-info" id="userInfo"></div>
+        </div>
+        <span class="logout" onclick="logout()">LOGOUT //</span>
+      </div>
+
+      <div class="toolbar">
+        <span class="count" id="productCount">0 products</span>
+        <button class="btn btn-primary" onclick="showAddForm()">+ NEW PRODUCT</button>
+      </div>
+
+      <div class="product-list" id="productList"></div>
+    </div>
+  </div>
+
+  <!-- Modal Form -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <h2 id="modalTitle">New Product</h2>
+      <div id="modalBody"></div>
+      <div class="form-actions">
+        <button class="btn" onclick="closeModal()">CANCEL</button>
+        <button class="btn btn-primary" id="modalSaveBtn" onclick="saveProduct()">PUBLISH</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const GITHUB_API = 'https://api.github.com';
+    const OWNER = 'opus-io';
+    const REPO = 'Tech-Link';
+    const BRANCH = 'main';
+    const PRODUCTS_PATH = 'content/products';
+
+    let token = '';
+    let products = [];
+    let editingIndex = -1;
+
+    // ---------- UTILS ----------
+    function $(id) { return document.getElementById(id); }
+
+    function toast(msg, type = 'success') {
+      const el = $('toast');
+      el.textContent = msg;
+      el.className = 'toast ' + type + ' show';
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    function showLoader(btn) {
+      const orig = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = '...';
+      return () => { btn.disabled = false; btn.textContent = orig; };
+    }
+
+    // ---------- AUTH ----------
+    function login() {
+      const t = $('tokenInput').value.trim();
+      if (!t) { toast('Masukkan token!', 'error'); return; }
+      token = t;
+      localStorage.setItem('techlink_token', token);
+      loadDashboard();
+    }
+
+    function logout() {
+      token = '';
+      localStorage.removeItem('techlink_token');
+      $('loginSection').style.display = '';
+      $('dashboardSection').style.display = 'none';
+    }
+
+    // ---------- GITHUB API ----------
+    async function ghFetch(url, options = {}) {
+      const res = await fetch(GITHUB_API + url, {
+        headers: {
+          'Authorization': 'token ' + token,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json',
+          ...options.headers,
+        },
+        ...options,
+      });
+      if (!res.ok) {
+        const err = await res.text();
+        throw new Error(err);
+      }
+      return res.json();
+    }
+
+    async function getProductFiles() {
+      try {
+        const data = await ghFetch('/repos/' + OWNER + '/' + REPO + '/contents/' + PRODUCTS_PATH + '?ref=' + BRANCH);
+        return Array.isArray(data) ? data.filter(f => f.name.endsWith('.json')) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    async function getFileContent(file) {
+      const res = await fetch(file.download_url);
+      return res.json();
+    }
+
+    async function getSha(path) {
+      try {
+        const data = await ghFetch('/repos/' + OWNER + '/' + REPO + '/contents/' + path + '?ref=' + BRANCH);
+        return data.sha;
+      } catch { return null; }
+    }
+
+    async function commitFile(path, content, message) {
+      let sha = null;
+      try { sha = await getSha(path); } catch {}
+
+      const body = {
+        message,
+        content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
+        branch: BRANCH,
+      };
+      if (sha) body.sha = sha;
+
+      const url = '/repos/' + OWNER + '/' + REPO + '/contents/' + path;
+      return ghFetch(url, { method: 'PUT', body: JSON.stringify(body) });
+    }
+
+    async function deleteFile(path, message) {
+      const sha = await getSha(path);
+      if (!sha) throw new Error('File not found');
+      return ghFetch('/repos/' + OWNER + '/' + REPO + '/contents/' + path, {
+        method: 'DELETE',
+        body: JSON.stringify({ message, sha, branch: BRANCH }),
+      });
+    }
+
+    function slugify(text) {
+      return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'product';
+    }
+
+    // ---------- LOAD ----------
+    async function loadDashboard() {
+      $('loginSection').style.display = 'none';
+      $('dashboardSection').style.display = '';
+
+      try {
+        // Verify token
+        const user = await ghFetch('/user');
+        $('userInfo').textContent = 'Logged in as: ' + user.login;
+      } catch (e) {
+        toast('Token invalid!', 'error');
+        logout();
+        return;
+      }
+
+      await loadProducts();
+    }
+
+    async function loadProducts() {
+      const files = await getProductFiles();
+      products = [];
+
+      for (const f of files) {
+        try {
+          const data = await getFileContent(f);
+          products.push({ ...data, _file: f.name });
+        } catch { /* skip corrupt files */ }
+      }
+
+      renderProducts();
+    }
+
+    function renderProducts() {
+      const list = $('productList');
+      $('productCount').textContent = products.length + ' products';
+
+      if (products.length === 0) {
+        list.innerHTML = '<div style="color:#666;text-align:center;padding:55px;font-size:13px">No products yet. Click "+ NEW PRODUCT" to start.</div>';
+        return;
+      }
+
+      list.innerHTML = products.map((p, i) => `
+        <div class="product-item">
+          <div class="info">
+            <h3>${p.featured ? '<span class="featured-badge">✦</span>' : ''}${escHtml(p.title)}</h3>
+            <div class="meta">
+              ${p.featured ? '<span class="featured-badge">FEATURED</span>' : ''}
+              ${p.badge || ''} &middot; ${(p.links||[]).length} link(s) &middot; ${p.tags ? p.tags.join(', ') : ''}
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-sm" onclick="showEditForm(${i})">EDIT</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteProduct(${i})">DEL</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function escHtml(s) {
+      const div = document.createElement('div');
+      div.textContent = s || '';
+      return div.innerHTML;
+    }
+
+    // ---------- FORM ----------
+    function showAddForm() {
+      editingIndex = -1;
+      $('modalTitle').textContent = 'New Product';
+      renderForm({
+        title: '', imageAlt: '', image: '', featured: false,
+        badge: 'STANDARD_ISSUE', tags: [], defaultUrl: 'https://',
+        description: '', links: [{ label: 'ACCESS //', href: 'https://', color: 'white' }],
+        variant: 'standard',
+      });
+      $('modal').classList.add('active');
+    }
+
+    function showEditForm(index) {
+      editingIndex = index;
+      $('modalTitle').textContent = 'Edit Product';
+      renderForm(products[index]);
+      $('modal').classList.add('active');
+    }
+
+    function renderForm(data) {
+      const tagsStr = (data.tags || []).join(', ');
+      const linksHtml = (data.links || []).map((l, i) => `
+        <div class="sub-item">
+          <input type="text" class="link-label" value="${escHtml(l.label)}" placeholder="Label" />
+          <input type="text" class="link-href" value="${escHtml(l.href)}" placeholder="URL" />
+          <select class="link-color">
+            <option value="amber" ${l.color==='amber'?'selected':''}>Amber</option>
+            <option value="green" ${l.color==='green'?'selected':''}>Green</option>
+            <option value="white" ${l.color==='white'?'selected':''}>White</option>
+          </select>
+          <button class="btn btn-sm btn-danger" onclick="removeLink(${i})">X</button>
+        </div>
+      `).join('');
+
+      $('modalBody').innerHTML = `
+        <div class="field">
+          <label>Product Name *</label>
+          <input id="f-title" value="${escHtml(data.title)}" required />
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Image URL *</label>
+            <input id="f-image" value="${escHtml(data.image)}" />
+          </div>
+          <div class="field">
+            <label>Image Alt Text *</label>
+            <input id="f-imageAlt" value="${escHtml(data.imageAlt)}" />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Badge *</label>
+            <input id="f-badge" value="${escHtml(data.badge)}" />
+          </div>
+          <div class="field">
+            <label>Default URL *</label>
+            <input id="f-defaultUrl" value="${escHtml(data.defaultUrl)}" />
+          </div>
+        </div>
+        <div class="field checkbox">
+          <input type="checkbox" id="f-featured" ${data.featured?'checked':''} />
+          <label for="f-featured">Featured Product?</label>
+        </div>
+        <div class="field">
+          <label>Tags (comma separated)</label>
+          <input id="f-tags" value="${escHtml(tagsStr)}" placeholder="SHOPEE, TOKOPEDIA, TIKTOK" />
+        </div>
+        <div class="field">
+          <label>Description *</label>
+          <textarea id="f-description">${escHtml(data.description)}</textarea>
+        </div>
+        <div class="field">
+          <label>Variant *</label>
+          <select id="f-variant">
+            <option value="standard" ${data.variant==='standard'?'selected':''}>Standard</option>
+            <option value="featured" ${data.variant==='featured'?'selected':''}>Featured</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Access Links</label>
+          <div class="sub-list" id="linksContainer">${linksHtml}</div>
+          <button class="btn btn-sm add-sub" onclick="addLink()">+ Add Link</button>
+        </div>
+      `;
+    }
+
+    function addLink() {
+      const container = $('linksContainer');
+      const idx = container.children.length;
+      const div = document.createElement('div');
+      div.className = 'sub-item';
+      div.innerHTML = `
+        <input type="text" class="link-label" placeholder="Label" />
+        <input type="text" class="link-href" value="https://" placeholder="URL" />
+        <select class="link-color">
+          <option value="amber">Amber</option>
+          <option value="green">Green</option>
+          <option value="white" selected>White</option>
+        </select>
+        <button class="btn btn-sm btn-danger" onclick="this.parentElement.remove()">X</button>
+      `;
+      container.appendChild(div);
+    }
+
+    function removeLink(index) {
+      const container = $('linksContainer');
+      if (container.children.length > 1) {
+        container.children[index].remove();
+      }
+    }
+
+    function getFormData() {
+      const links = [];
+      const container = $('linksContainer');
+      for (const item of container.children) {
+        const label = item.querySelector('.link-label').value.trim();
+        const href = item.querySelector('.link-href').value.trim();
+        const color = item.querySelector('.link-color').value;
+        if (label && href) {
+          links.push({ label, href, color });
+        }
+      }
+
+      const tagsStr = $('f-tags').value.trim();
+      const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [];
+
+      return {
+        title: $('f-title').value.trim(),
+        imageAlt: $('f-imageAlt').value.trim(),
+        image: $('f-image').value.trim(),
+        featured: $('f-featured').checked,
+        badge: $('f-badge').value.trim(),
+        tags,
+        defaultUrl: $('f-defaultUrl').value.trim(),
+        description: $('f-description').value.trim(),
+        links,
+        variant: $('f-variant').value,
+      };
+    }
+
+    // ---------- SAVE ----------
+    async function saveProduct() {
+      const data = getFormData();
+      if (!data.title) { toast('Product name required!', 'error'); return; }
+      if (!data.image) { toast('Image URL required!', 'error'); return; }
+      if (!data.links.length) { toast('At least 1 link required!', 'error'); return; }
+
+      const btn = $('modalSaveBtn');
+      const done = showLoader(btn);
+
+      try {
+        const filename = slugify(data.title) + '.json';
+
+        if (editingIndex >= 0) {
+          // Edit existing - delete old file if name changed
+          const oldFile = products[editingIndex]._file;
+          if (oldFile !== filename) {
+            await deleteFile(PRODUCTS_PATH + '/' + oldFile, 'Delete: ' + products[editingIndex].title);
+          }
+        }
+
+        await commitFile(
+          PRODUCTS_PATH + '/' + filename,
+          data,
+          editingIndex >= 0 ? 'Update: ' + data.title : 'Add: ' + data.title
+        );
+
+        closeModal();
+        toast(editingIndex >= 0 ? 'Product updated!' : 'Product added!');
+        await loadProducts();
+      } catch (e) {
+        toast('Error: ' + e.message, 'error');
+      } finally {
+        done();
+      }
+    }
+
+    // ---------- DELETE ----------
+    async function deleteProduct(index) {
+      if (!confirm('Delete "' + products[index].title + '"?')) return;
+
+      try {
+        await deleteFile(
+          PRODUCTS_PATH + '/' + products[index]._file,
+          'Delete: ' + products[index].title
+        );
+        toast('Product deleted!');
+        await loadProducts();
+      } catch (e) {
+        toast('Error: ' + e.message, 'error');
+      }
+    }
+
+    // ---------- MISC ----------
+    function closeModal() {
+      $('modal').classList.remove('active');
+    }
+
+    // Click outside modal to close
+    $('modal').addEventListener('click', (e) => {
+      if (e.target === $('modal')) closeModal();
+    });
+
+    // ---------- INIT ----------
+    // Auto-login from localStorage
+    const saved = localStorage.getItem('techlink_token');
+    if (saved) {
+      token = saved;
+      $('tokenInput').value = saved;
+      loadDashboard();
+      document.fonts.ready.then(() => {/* just wait */});
+    }
+  </script>
 </body>
 </html>
