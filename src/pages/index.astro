@@ -1,0 +1,22 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import DiagnosticCanvas from "../components/DiagnosticCanvas.astro";
+import ProfileHeader from "../components/ProfileHeader.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import ProductCard from "../components/ProductCard.astro";
+import { products } from "../data/products";
+---
+
+<BaseLayout title="@artifak.tech - Advanced Industrial OS">
+  <DiagnosticCanvas />
+
+  <div class="relative z-30 max-w-md mx-auto w-full pt-[21vh] px-[21px]">
+    <ProfileHeader />
+
+    <SectionHeading title="System_Links //" />
+
+    <main class="flex flex-col gap-[21px]">
+      {products.map((product) => <ProductCard product={product} />)}
+    </main>
+  </div>
+</BaseLayout>

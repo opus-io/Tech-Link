@@ -1,0 +1,184 @@
+---
+/**
+ * ProductCard — Kartu produk dengan dual-action (klik cepat / buka accordion).
+ *
+ * - Klik pada area fast-lane akan membuka defaultUrl di tab baru.
+ * - Klik tombol toggle akan membuka/menutup accordion dengan link akses.
+ */
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+
+const isFeatured = product.variant === "featured";
+
+const variantClasses = isFeatured
+  ? "border border-gray-800 hover:border-amber-500/50 shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+  : "border border-gray-800 hover:border-gray-600 shadow-sm";
+
+const titleClasses = isFeatured
+  ? "text-gray-200 group-hover:text-amber-400"
+  : "text-gray-300 group-hover:text-white";
+
+const linkColorClasses: Record<NonNullable<LinkItem["color"]>, string> = {
+  amber: "hover:border-amber-500/40 hover:text-amber-500",
+  green: "hover:border-green-500/40 hover:text-green-500",
+  white: "hover:border-gray-400 hover:text-white",
+};
+
+const linkAccentClasses: Record<NonNullable<LinkItem["color"]>, string> = {
+  amber: "bg-amber-500",
+  green: "bg-green-500",
+  white: "bg-white",
+};
+---
+
+<div
+  class={`product-card relative bg-[#121212] rounded-[13px] overflow-hidden transition-all group ${variantClasses}`}
+  data-url={product.defaultUrl}
+>
+  <div
+    class="absolute top-0 right-0 bg-[#1A1A1A] border-b border-l border-gray-800 px-2 py-1 rounded-bl-lg z-20"
+  >
+    <span class="font-robotic text-[9px] text-gray-500">ID:{product.id}</span>
+  </div>
+
+  <div
+    class="p-[21px] flex items-center justify-between gap-[13px] relative z-10"
+  >
+    <div class="fast-lane flex items-center gap-[13px] flex-1 cursor-pointer">
+      <div class="relative border border-gray-700 rounded-lg p-0.5 bg-[#1A1A1A]">
+        <img
+          src={product.image}
+          alt={product.imageAlt}
+          class="w-[55px] h-[55px] object-cover rounded-md opacity-90 transition-opacity group-hover:opacity-100"
+        />
+      </div>
+      <div>
+        {
+          product.featured ? (
+            <span class="text-[9px] font-robotic text-amber-500 tracking-widest mb-[4px] block flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+              {product.badge}
+            </span>
+          ) : (
+            <span class="text-[8px] font-robotic text-gray-500 uppercase tracking-widest mb-[4px] block">
+              {product.badge}
+            </span>
+          )
+        }
+        <h2
+          class={`text-[15px] font-bold transition-colors leading-tight ${titleClasses}`}
+        >
+          {product.title}
+        </h2>
+        <div class="flex gap-[8px] mt-[10px]">
+          {
+            product.tags.map((tag) => (
+              <span class="text-[9px] font-robotic bg-[#1A1A1A] text-gray-400 px-[6px] py-[3px] border border-gray-700 tracking-wider">
+                {tag}
+              </span>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <button
+      class="toggle-btn w-[34px] h-[34px] rounded-sm bg-[#1A1A1A] hover:bg-[#2A2A2A] border border-gray-700 flex items-center justify-center transition-colors shrink-0"
+      aria-label="Toggle detail"
+    >
+      <svg
+        class="w-[14px] h-[14px] text-gray-400 transform transition-transform duration-300 arrow-icon"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2.5"
+          d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="glass-accordion border-t border-gray-800 bg-[#0F0F0F]">
+    <div class="p-[21px] flex flex-col gap-[21px]">
+      <p
+        class="text-[12px] font-robotic text-gray-400 leading-relaxed border-l-2 border-gray-700 pl-3"
+      >
+        <strong class="text-gray-300 block mb-[2px]">LOG_NOTE:</strong>
+        {product.description}
+      </p>
+      <div class="flex flex-col gap-[13px]">
+        {
+          product.links.map((link, idx) => {
+            const color = link.color ?? "white";
+            const btnGroup = `group/btn${idx + 1}`;
+            return (
+              <a
+                href={link.href}
+                class:list={[
+                  "flex items-center justify-between p-[13px] rounded-sm text-[12px] font-robotic font-bold transition-colors border border-gray-800 bg-[#141414] text-gray-300 relative overflow-hidden",
+                  btnGroup,
+                  linkColorClasses[color],
+                ]}
+              >
+                <div
+                  class:list={[
+                    "absolute left-0 top-0 bottom-0 w-1 transform -translate-x-full transition-transform",
+                    btnGroup,
+                    linkAccentClasses[color],
+                  ]}
+                  style={`${btnGroup}:hover > & { transform: translateX(0); }`}
+                />
+                <div class="flex items-center gap-[13px] pl-2">
+                  <span class="tracking-widest">{link.label}</span>
+                </div>
+                <span>>></span>
+              </a>
+            );
+          })
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const cards = document.querySelectorAll<HTMLElement>(".product-card");
+    cards.forEach((card) => {
+      const fastLane = card.querySelector<HTMLElement>(".fast-lane");
+      const toggleBtn = card.querySelector<HTMLElement>(".toggle-btn");
+      const accordion = card.querySelector<HTMLElement>(".glass-accordion");
+      const arrow = card.querySelector<HTMLElement>(".arrow-icon");
+      const defaultUrl = card.getAttribute("data-url");
+
+      if (!fastLane || !toggleBtn || !accordion || !arrow || !defaultUrl) {
+        return;
+      }
+
+      fastLane.addEventListener("click", () => {
+        if (!card.classList.contains("is-open")) {
+          window.open(defaultUrl, "_blank", "noopener,noreferrer");
+        }
+      });
+
+      toggleBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (card.classList.contains("is-open")) {
+          card.classList.remove("is-open");
+          accordion.style.maxHeight = "0px";
+          arrow.classList.remove("rotate-180");
+        } else {
+          card.classList.add("is-open");
+          accordion.style.maxHeight = `${accordion.scrollHeight}px`;
+          arrow.classList.add("rotate-180");
+        }
+      });
+    });
+  });
+</script>

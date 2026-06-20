@@ -1,0 +1,165 @@
+---
+/**
+ * DiagnosticCanvas — Animated grid + typing text + radar scanline.
+ * Client-side script: membuat animasi canvas untuk HUD industri.
+ */
+---
+
+<div
+  class="absolute top-0 left-0 w-full h-[34vh] z-0 overflow-hidden bg-[#0A0A0C] border-b border-[#2A2A2A]"
+>
+  <canvas
+    id="diagnosticCanvas"
+    class="w-full h-full absolute top-0 left-0"
+  ></canvas>
+  <div
+    class="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A0A0C]/80 to-[#0A0A0C] z-20 pointer-events-none"
+  >
+  </div>
+</div>
+
+<script>
+  // ===================================================
+  // LOGIKA CANVAS: ANIMATED GRID & BIG ROBOTIC TEXT
+  // ===================================================
+  const canvas = document.getElementById(
+    "diagnosticCanvas",
+  ) as HTMLCanvasElement | null;
+
+  if (canvas) {
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      let width = 0;
+      let height = 0;
+
+      function resizeCanvas() {
+        if (!canvas) return;
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight * 0.35;
+      }
+      window.addEventListener("resize", resizeCanvas);
+      resizeCanvas();
+
+      // Data teks terminal
+      const typePhrases = [
+        "> INIT: PRODUCT DIRECTORY...",
+        "> LOAD: MECHANICAL SETUPS...",
+        "> SYNC: AFFILIATE STREAMS...",
+        "> AUTH: SYSTEM VERIFIED.",
+      ];
+
+      let phraseIndex = 0;
+      let charIndex = 0;
+      let isDeleting = false;
+      let typeTimer = 0;
+      let isHolding = false;
+
+      // Variabel untuk animasi background
+      let gridOffset = 0;
+      let scanlineY = 0;
+
+      function renderDiagnosticCanvas() {
+        if (!ctx || !canvas) return;
+
+        // 1. CLEAR & BACKGROUND
+        ctx.fillStyle = "#0A0A0C";
+        ctx.fillRect(0, 0, width, height);
+
+        // 2. ANIMATED BLUEPRINT GRID (Mengalir perlahan)
+        gridOffset += 0.3;
+        const gridSize = 25;
+        if (gridOffset >= gridSize) gridOffset = 0;
+
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.05)";
+        ctx.lineWidth = 1;
+
+        // Gambar Garis Vertikal (Bergerak ke kanan)
+        for (let x = gridOffset; x < width; x += gridSize) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, height);
+          ctx.stroke();
+        }
+        // Gambar Garis Horizontal (Bergerak ke bawah)
+        for (let y = gridOffset; y < height; y += gridSize) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(width, y);
+          ctx.stroke();
+        }
+
+        // 3. RADAR SCANLINE
+        scanlineY += 1.5;
+        if (scanlineY > height) scanlineY = 0;
+
+        ctx.fillStyle = "rgba(245, 158, 11, 0.2)";
+        ctx.fillRect(0, scanlineY, width, 2);
+        const scanGrad = ctx.createLinearGradient(
+          0,
+          scanlineY - 30,
+          0,
+          scanlineY,
+        );
+        scanGrad.addColorStop(0, "rgba(245, 158, 11, 0)");
+        scanGrad.addColorStop(1, "rgba(245, 158, 11, 0.05)");
+        ctx.fillStyle = scanGrad;
+        ctx.fillRect(0, scanlineY - 30, width, 30);
+
+        // 4. TEKS DIAGNOSTIK KECIL DI SUDUT
+        ctx.font = "10px 'Share Tech Mono', monospace";
+        ctx.fillStyle = "rgba(161, 161, 170, 0.6)";
+        ctx.textAlign = "left";
+        ctx.fillText("SYS.V.2.0.4 // ON", 15, 25);
+        ctx.fillText("MODULE // SECURE", 15, 40);
+
+        // 5. LOGIKA MENGETIK
+        if (!isHolding) {
+          typeTimer++;
+          if (typeTimer > 2) {
+            typeTimer = 0;
+
+            if (!isDeleting) {
+              charIndex++;
+              if (charIndex > typePhrases[phraseIndex].length) {
+                isHolding = true;
+                setTimeout(() => {
+                  isHolding = false;
+                  isDeleting = true;
+                }, 5000);
+              }
+            } else {
+              charIndex -= 3;
+              if (charIndex <= 0) {
+                charIndex = 0;
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % typePhrases.length;
+              }
+            }
+          }
+        }
+
+        const currentText = typePhrases[phraseIndex].substring(0, charIndex);
+        const cursor = Math.floor(Date.now() / 300) % 2 === 0 ? "_" : " ";
+
+        ctx.font = "bold 18px 'Share Tech Mono', monospace";
+        ctx.fillStyle = "#FFFFFF";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        ctx.shadowColor = "rgba(245, 158, 11, 0.4)";
+        ctx.shadowBlur = 8;
+
+        ctx.fillText(currentText + cursor, width / 2, height / 2);
+
+        ctx.shadowBlur = 0;
+
+        requestAnimationFrame(renderDiagnosticCanvas);
+      }
+
+      // Memuat font khusus sebelum rendering canvas
+      document.fonts.ready.then(() => {
+        renderDiagnosticCanvas();
+      });
+    }
+  }
+</script>
