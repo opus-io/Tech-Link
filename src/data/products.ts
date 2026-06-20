@@ -32,9 +32,9 @@ export const products: Product[] = Object.values(productModules).map(
   })
 );
 
-// Logo mapping untuk tag platform
+// Logo mapping untuk tag platform (raw GitHub URLs - reliable)
 export const logoMap: Record<string, string> = {
-  SHOPEE: "/logos/shopee.png",
-  TOKOPEDIA: "/logos/tokopedia.png",
-  TIKTOK: "/logos/tiktok.png",
+  SHOPEE: "https://raw.githubusercontent.com/opus-io/Tech-Link/main/public/logos/shopee.png",
+  TOKOPEDIA: "https://raw.githubusercontent.com/opus-io/Tech-Link/main/public/logos/tokopedia.png",
+  TIKTOK: "https://raw.githubusercontent.com/opus-io/Tech-Link/main/public/logos/tiktok.png",
 };
