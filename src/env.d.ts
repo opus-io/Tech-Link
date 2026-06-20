@@ -19,4 +19,7 @@ interface Product {
   description: string;
   links: LinkItem[];
   variant: "featured" | "standard";
+  rating?: number;
+  sold?: number;
+  shortDesc?: string;
 }
