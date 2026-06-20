@@ -1,7 +1,88 @@
+/* ===================================
+   DESIGN TOKENS & CSS VARIABLES
+   =================================== */
+:root {
+  /* Colors */
+  --color-bg-primary: #0a0a0c;
+  --color-bg-secondary: #121212;
+  --color-bg-tertiary: #1A1A1A;
+  --color-bg-quaternary: #141414;
+  --color-bg-dark: #0F0F0F;
+
+  --color-border-primary: #2A2A2A;
+  --color-border-secondary: #333333;
+  --color-border-light: rgba(255, 255, 255, 0.05);
+
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #E5E5E5;
+  --color-text-tertiary: #A1A1AA;
+  --color-text-muted: #71717A;
+
+  --color-accent-amber: #f59e0b;
+  --color-accent-green: #22c55e;
+
+  /* Spacing (Fibonacci-inspired) */
+  --spacing-xs: 8px;
+  --spacing-sm: 13px;
+  --spacing-md: 21px;
+  --spacing-lg: 34px;
+  --spacing-xl: 55px;
+  --spacing-2xl: 89px;
+
+  /* Border */
+  --border-radius-sm: 8px;
+  --border-radius-md: 13px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 4px 24px rgba(0, 0, 0, 0.4);
+
+  /* Font Family */
+  --font-robotic: "Share Tech Mono", monospace;
+  --font-sans: system-ui, -apple-system, sans-serif;
+}
+
 /* Mengaplikasikan font robotic ke elemen spesifik */
 .font-robotic {
-  font-family: "Share Tech Mono", monospace;
+  font-family: var(--font-robotic);
 }
+
+/* ===================================
+   COMPONENT UTILITIES (DRY)
+   =================================== */
+
+/* Card Base */
+.card-base {
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  border: 1px solid var(--color-border-primary);
+  transition: all 0.3s ease;
+}
+
+.card-featured {
+  @apply card-base;
+  border-color: var(--color-border-primary);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-featured:hover {
+  border-color: rgba(245, 158, 11, 0.5);
+}
+
+.card-standard {
+  @apply card-base;
+  box-shadow: var(--shadow-sm);
+}
+
+.card-standard:hover {
+  border-color: var(--color-border-secondary);
+}
+
+/* ===================================
+   ANIMATIONS
+   =================================== */
 
 .glass-accordion {
   max-height: 0;
@@ -20,7 +101,7 @@
 
 /* Pola background mikro-dot plat alumunium untuk body agar tidak sepi */
 .tech-pattern-bg {
-  background-color: #0a0a0c;
+  background-color: var(--color-bg-primary);
   background-image: radial-gradient(
     rgba(255, 255, 255, 0.05) 1px,
     transparent 1px
@@ -43,14 +124,14 @@
 .hud-corners::before {
   top: -1px;
   left: -1px;
-  border-top: 2px solid #f59e0b;
-  border-left: 2px solid #f59e0b;
+  border-top: 2px solid var(--color-accent-amber);
+  border-left: 2px solid var(--color-accent-amber);
 }
 .hud-corners::after {
   bottom: -1px;
   right: -1px;
-  border-bottom: 2px solid #f59e0b;
-  border-right: 2px solid #f59e0b;
+  border-bottom: 2px solid var(--color-accent-amber);
+  border-right: 2px solid var(--color-accent-amber);
 }
 
 @tailwind base;

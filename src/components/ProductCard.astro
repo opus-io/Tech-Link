@@ -5,6 +5,8 @@
  * - Klik pada area fast-lane akan membuka defaultUrl di tab baru.
  * - Klik tombol toggle akan membuka/menutup accordion dengan link akses.
  */
+import LinkButton from "./LinkButton.astro";
+
 interface Props {
   product: Product;
 }
@@ -20,23 +22,13 @@ const variantClasses = isFeatured
 const titleClasses = isFeatured
   ? "text-gray-200 group-hover:text-amber-400"
   : "text-gray-300 group-hover:text-white";
-
-const linkColorClasses: Record<NonNullable<LinkItem["color"]>, string> = {
-  amber: "hover:border-amber-500/40 hover:text-amber-500",
-  green: "hover:border-green-500/40 hover:text-green-500",
-  white: "hover:border-gray-400 hover:text-white",
-};
-
-const linkAccentClasses: Record<NonNullable<LinkItem["color"]>, string> = {
-  amber: "bg-amber-500",
-  green: "bg-green-500",
-  white: "bg-white",
-};
 ---
 
 <div
   class={`product-card relative bg-[#121212] rounded-[13px] overflow-hidden transition-all group ${variantClasses}`}
   data-url={product.defaultUrl}
+  role="article"
+  aria-label={`Product: ${product.title}`}
 >
   <div
     class="absolute top-0 right-0 bg-[#1A1A1A] border-b border-l border-gray-800 px-2 py-1 rounded-bl-lg z-20"
@@ -52,6 +44,8 @@ const linkAccentClasses: Record<NonNullable<LinkItem["color"]>, string> = {
         <img
           src={product.image}
           alt={product.imageAlt}
+          loading="lazy"
+          decoding="async"
           class="w-[55px] h-[55px] object-cover rounded-md opacity-90 transition-opacity group-hover:opacity-100"
         />
       </div>
@@ -87,7 +81,8 @@ const linkAccentClasses: Record<NonNullable<LinkItem["color"]>, string> = {
 
     <button
       class="toggle-btn w-[34px] h-[34px] rounded-sm bg-[#1A1A1A] hover:bg-[#2A2A2A] border border-gray-700 flex items-center justify-center transition-colors shrink-0"
-      aria-label="Toggle detail"
+      aria-label={`Toggle details for ${product.title}`}
+      aria-expanded="false"
     >
       <svg
         class="w-[14px] h-[14px] text-gray-400 transform transition-transform duration-300 arrow-icon"
@@ -114,33 +109,9 @@ const linkAccentClasses: Record<NonNullable<LinkItem["color"]>, string> = {
       </p>
       <div class="flex flex-col gap-[13px]">
         {
-          product.links.map((link, idx) => {
-            const color = link.color ?? "white";
-            const btnGroup = `group/btn${idx + 1}`;
-            return (
-              <a
-                href={link.href}
-                class:list={[
-                  "flex items-center justify-between p-[13px] rounded-sm text-[12px] font-robotic font-bold transition-colors border border-gray-800 bg-[#141414] text-gray-300 relative overflow-hidden",
-                  btnGroup,
-                  linkColorClasses[color],
-                ]}
-              >
-                <div
-                  class:list={[
-                    "absolute left-0 top-0 bottom-0 w-1 transform -translate-x-full transition-transform",
-                    btnGroup,
-                    linkAccentClasses[color],
-                  ]}
-                  style={`${btnGroup}:hover > & { transform: translateX(0); }`}
-                />
-                <div class="flex items-center gap-[13px] pl-2">
-                  <span class="tracking-widest">{link.label}</span>
-                </div>
-                <span>>></span>
-              </a>
-            );
-          })
+          product.links.map((link, idx) => (
+            <LinkButton label={link.label} href={link.href} color={link.color} index={idx} />
+          ))
         }
       </div>
     </div>
@@ -148,8 +119,9 @@ const linkAccentClasses: Record<NonNullable<LinkItem["color"]>, string> = {
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
+  function initProductCard() {
     const cards = document.querySelectorAll<HTMLElement>(".product-card");
+    
     cards.forEach((card) => {
       const fastLane = card.querySelector<HTMLElement>(".fast-lane");
       const toggleBtn = card.querySelector<HTMLElement>(".toggle-btn");
@@ -161,24 +133,55 @@ const linkAccentClasses: Record<NonNullable<LinkItem["color"]>, string> = {
         return;
       }
 
-      fastLane.addEventListener("click", () => {
+      // Event handlers dengan cleanup
+      const handleFastLaneClick = () => {
         if (!card.classList.contains("is-open")) {
           window.open(defaultUrl, "_blank", "noopener,noreferrer");
         }
-      });
+      };
 
-      toggleBtn.addEventListener("click", (e) => {
+      const handleToggleClick = (e: Event) => {
         e.stopPropagation();
         if (card.classList.contains("is-open")) {
           card.classList.remove("is-open");
           accordion.style.maxHeight = "0px";
           arrow.classList.remove("rotate-180");
+          toggleBtn.setAttribute("aria-expanded", "false");
         } else {
           card.classList.add("is-open");
           accordion.style.maxHeight = `${accordion.scrollHeight}px`;
           arrow.classList.add("rotate-180");
+          toggleBtn.setAttribute("aria-expanded", "true");
         }
-      });
+      };
+
+      fastLane.addEventListener("click", handleFastLaneClick);
+      toggleBtn.addEventListener("click", handleToggleClick);
+
+      // Cleanup function untuk mencegah memory leak
+      const cleanup = () => {
+        fastLane.removeEventListener("click", handleFastLaneClick);
+        toggleBtn.removeEventListener("click", handleToggleClick);
+      };
+
+      // Store cleanup di card element untuk later cleanup
+      (card as any)._cleanup = cleanup;
+    });
+  }
+
+  // Initialize on DOMContentLoaded
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initProductCard);
+  } else {
+    initProductCard();
+  }
+
+  // Cleanup on view transition (untuk Astro)
+  document.addEventListener("astro:before-swap", () => {
+    document.querySelectorAll<HTMLElement>(".product-card").forEach((card) => {
+      if ((card as any)._cleanup) {
+        (card as any)._cleanup();
+      }
     });
   });
 </script>

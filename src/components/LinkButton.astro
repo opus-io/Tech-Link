@@ -1,0 +1,50 @@
+---
+/**
+ * LinkButton — Tombol link reusable dengan animasi accent bar.
+ * Menggantikan logika link di ProductCard untuk DRY principle.
+ */
+interface Props {
+  label: string;
+  href: string;
+  color?: "amber" | "green" | "white";
+  index?: number;
+}
+
+const { label, href, color = "white", index = 0 } = Astro.props;
+
+const linkColorClasses: Record<NonNullable<Props["color"]>, string> = {
+  amber: "hover:border-amber-500/40 hover:text-amber-500",
+  green: "hover:border-green-500/40 hover:text-green-500",
+  white: "hover:border-gray-400 hover:text-white",
+};
+
+const linkAccentClasses: Record<NonNullable<Props["color"]>, string> = {
+  amber: "bg-amber-500",
+  green: "bg-green-500",
+  white: "bg-white",
+};
+
+const btnGroup = `group/btn${index + 1}`;
+---
+
+<a
+  href={href}
+  class:list={[
+    "flex items-center justify-between p-[13px] rounded-sm text-[12px] font-robotic font-bold transition-colors border border-gray-800 bg-[#141414] text-gray-300 relative overflow-hidden",
+    btnGroup,
+    linkColorClasses[color],
+  ]}
+>
+  <div
+    class:list={[
+      "absolute left-0 top-0 bottom-0 w-1 transform -translate-x-full transition-transform",
+      btnGroup,
+      linkAccentClasses[color],
+    ]}
+    style={`${btnGroup}:hover > & { transform: translateX(0); }`}
+  />
+  <div class="flex items-center gap-[13px] pl-2">
+    <span class="tracking-widest">{label}</span>
+  </div>
+  <span>>></span>
+</a>

@@ -1,0 +1,30 @@
+﻿Priority,Category,Issue,Severity,Effort,Impact,File(s),Line(s),Current Problem,Recommended Fix,Expected Benefit,Dependencies
+1,Performance,Image Lazy Loading,HIGH,EASY,HIGH,ProfileHeader.astro;ProductCard.astro,12;53,All images from CDN without lazy loading,Add loading='lazy' decoding='async',30-40% faster LCP,None
+1,Accessibility,Keyboard Navigation,HIGH,EASY,HIGH,ProductCard.astro,50,Clickable div not keyboard accessible,Change div.fast-lane to button element,Full keyboard support,None
+1,Accessibility,Canvas Accessibility,HIGH,MEDIUM,HIGH,DiagnosticCanvas.astro,12,Canvas missing ARIA labels,Add role='img' aria-label,Screen reader support,None
+1,Accessibility,Alt Text,HIGH,EASY,HIGH,ProfileHeader.astro,13,Vague alt text 'Cover',Descriptive alt text for profile,Better context for readers,None
+1,Performance,Canvas FPS Throttling,HIGH,MEDIUM,HIGH,DiagnosticCanvas.astro,156,Full redraw at 60 FPS every frame,Throttle to 30 FPS requestAnimationFrame,40-50% CPU reduction,None
+2,Accessibility,Decorative Elements,HIGH,EASY,LOW,SectionHeading.astro,13-16,Decorative boxes read by screen readers,Add aria-hidden='true',Cleaner screen reader experience,None
+2,Font Optimization,Font Display,MEDIUM,EASY,MEDIUM,BaseLayout.astro,16-19,Font render-blocking (3s default),Add font-display=swap parameter,Better perceived performance,None
+2,Font Optimization,Font Preconnect,MEDIUM,EASY,MEDIUM,BaseLayout.astro,14-15,No preconnect to fonts.googleapis.com,Add preconnect link element,50-100ms faster font load,None
+2,CSS Efficiency,Hardcoded Spacing,MEDIUM,MEDIUM,MEDIUM,tailwind.config.mjs,,Arbitrary spacing values w-[89px] gap-[21px] scattered,Define spacing scale in tailwind config,10-15% CSS reduction,None
+2,CSS Efficiency,Custom Colors,MEDIUM,EASY,MEDIUM,tailwind.config.mjs,,No color palette definition in config,Define colors: bg primary/secondary/tertiary,15-20% CSS reduction,None
+2,CSS Efficiency,Font Sizes,MEDIUM,EASY,MEDIUM,tailwind.config.mjs,,Arbitrary font sizes text-[24px] hardcoded,Define fontSize scale in tailwind config,5-10% CSS reduction,None
+3,Code Quality,CSS Duplication,MEDIUM,EASY,MEDIUM,ProductCard.astro;global.css,24-34;various,Repeated colors 'bg-[#121212]' 'border-gray-800',Extract color palette to CSS variables,15-20% CSS reduction,None
+3,Code Quality,Component Extraction - LinkButton,MEDIUM,MEDIUM,MEDIUM,ProductCard.astro,116-144,Link rendering logic 30+ lines duplicated,Extract to src/components/LinkButton.astro,30 lines removed; reusable,None
+3,Code Quality,Component Extraction - ImageCard,MEDIUM,MEDIUM,MEDIUM,ProfileHeader.astro;ProductCard.astro,8-16;51-57,Image display patterns duplicated,Extract to src/components/ImageCard.astro,20-30 lines removed; DRY,None
+3,Code Quality,Design Tokens,MEDIUM,EASY,MEDIUM,ProductCard.astro,24-34,Color maps defined twice linkColorClasses linkAccentClasses,Create src/data/styleConstants.ts,Single source of truth,None
+3,CSS Efficiency,Component Classes,MEDIUM,EASY,MEDIUM,global.css,,Button shadow text styles hardcoded,Add @layer components with reusable classes,25-30% CSS reduction,None
+4,Performance,Memory Leak,HIGH,MEDIUM,MEDIUM,DiagnosticCanvas.astro,40,Window resize listener never removed,Add cleanup handler in Astro lifecycle,Prevent memory accumulation,None
+4,Performance,Canvas Offscreen Rendering,HIGH,MEDIUM,HIGH,DiagnosticCanvas.astro,68-89,Grid redrawn 40-50 lines every frame,Use OffscreenCanvas for static pattern,50-70% canvas speedup,None
+4,Performance,Canvas Gradient Cache,MEDIUM,EASY,MEDIUM,DiagnosticCanvas.astro,97-106,Gradient created fresh every frame,Create gradient once outside loop,20-30% GPU memory reduction,None
+4,Performance,DOMContentLoaded Race,MEDIUM,EASY,MEDIUM,ProductCard.astro,151,DOMContentLoaded may have already fired,Check readyState or use Astro lifecycle,Reliable initialization,None
+4,Performance,Script Modularization,MEDIUM,MEDIUM,MEDIUM,DiagnosticCanvas.astro;ProductCard.astro,21-165;150-184,130 lines + 35 lines inline scripts,Extract to src/scripts/canvas.ts src/scripts/productCard.ts,Better organization testing,None
+5,Build & Deployment,Static Output Mode,MEDIUM,EASY,HIGH,astro.config.mjs,,No output: static configured,Add output: 'static' to config,Pre-rendered static site,None
+5,Build & Deployment,Compression,MEDIUM,EASY,MEDIUM,astro.config.mjs;package.json,,No build compression configured,Install astro-compress add to integrations,20-30% gzip reduction,astro-compress
+5,Build & Deployment,Sitemap,MEDIUM,EASY,MEDIUM,astro.config.mjs;package.json,,No sitemap generation for SEO,Install astro-sitemap add to integrations,Better crawlability; SEO,astro-sitemap
+5,Build & Deployment,Image Optimization,MEDIUM,MEDIUM,HIGH,astro.config.mjs;ProfileHeader.astro;ProductCard.astro,,All images from external CDN,Install @astrojs/image use Image component,40-50% smaller images webp,@astrojs/image
+5,Build & Deployment,GitHub Actions,MEDIUM,MEDIUM,MEDIUM,.github/workflows/deploy.yml,,No automated CI/CD pipeline,Create deploy.yml workflow file,Automated testing deployment,None
+6,Build & Deployment,Cache Headers,MEDIUM,HARD,MEDIUM,_headers (new),,No cache strategy configured,Create _headers file with cache rules,50% faster repeat visits,None
+7,Monitoring,Web Vitals Tracking,LOW,EASY,LOW,src/scripts/vitals.ts (new),,No performance monitoring,Install web-vitals track metrics,Performance visibility,web-vitals
+7,Monitoring,Error Tracking,LOW,MEDIUM,LOW,src/scripts/monitoring.ts (new),,No error reporting,Add Sentry or similar,Error visibility,sentry/browser (optional)
