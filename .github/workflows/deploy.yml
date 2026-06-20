@@ -42,9 +42,6 @@ jobs:
       - name: Build with Astro
         run: npm run build
         working-directory: ${{ env.BUILD_PATH }}
-        env:
-          TINA_CLIENT_ID: ${{ secrets.TINA_CLIENT_ID }}
-          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

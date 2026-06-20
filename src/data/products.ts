@@ -1,32 +1,38 @@
 /**
  * Data produk yang ditampilkan di halaman Linktree Affiliate.
- * 
- * Data dimuat secara dinamis dari folder `/content/products/`.
- * TinaCMS Cloud akan auto-generate/update JSON files saat edit via app.tina.io
+ * Ubah atau tambahkan entri di sini untuk memperbarui konten halaman.
  */
-
-// Dynamic import semua JSON files dari content/products/
-const productModules = import.meta.glob("../../content/products/*.json", {
-  eager: true,
-  import: "default",
-});
-
-interface RawProduct {
-  title: string;
-  image: string;
-  imageAlt: string;
-  featured?: boolean;
-  badge: string;
-  tags: string[];
-  defaultUrl: string;
-  description: string;
-  links: LinkItem[];
-  variant: "featured" | "standard";
-}
-
-export const products: Product[] = Object.values(productModules).map(
-  (data: RawProduct, index: number) => ({
-    id: String(index + 1).padStart(2, "0"),
-    ...data,
-  })
-);
+export const products: Product[] = [
+  {
+    id: "01",
+    image:
+      "https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=150&h=150",
+    imageAlt: "Mechanical Keyboard 65%",
+    featured: true,
+    badge: "FEATURED",
+    title: "Mechanical Keyboard 65%",
+    tags: ["SHOPEE", "TOKOPEDIA"],
+    defaultUrl: "https://shopee.co.id",
+    description:
+      "Pre-lubed stabilisator, triple-mode. Komponen esensial untuk meja ringkas.",
+    links: [
+      { label: "ACCESS // SHOPEE", href: "#", color: "amber" },
+      { label: "ACCESS // TOKOPEDIA", href: "#", color: "green" },
+    ],
+    variant: "featured",
+  },
+  {
+    id: "02",
+    image:
+      "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=150&h=150",
+    imageAlt: "Buku Filosofi Teras",
+    badge: "STANDARD_ISSUE",
+    title: "Filosofi Teras",
+    tags: ["TIKTOK"],
+    defaultUrl: "https://tiktok.com",
+    description:
+      "Modul stoikisme praktis. Esensial untuk stabilitas sistem mental.",
+    links: [{ label: "ACCESS // TIKTOK", href: "#", color: "white" }],
+    variant: "standard",
+  },
+];
