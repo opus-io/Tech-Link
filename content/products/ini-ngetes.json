@@ -1,0 +1,20 @@
+{
+  "title": "Ini Ngetes",
+  "imageAlt": "tes",
+  "image": "https://unsplash.com/photos/milk-and-honey-by-rupi-kaur-book-on-side-table-CXYPfveiuis",
+  "featured": false,
+  "badge": "NGETES",
+  "tags": [
+    "Tiktok"
+  ],
+  "defaultUrl": "https://www.tiktok.com/",
+  "description": "ini ngetes",
+  "links": [
+    {
+      "label": "ACCESS //TIKTOK",
+      "href": "https://www.tiktok.com/",
+      "color": "white"
+    }
+  ],
+  "variant": "standard"
+}
