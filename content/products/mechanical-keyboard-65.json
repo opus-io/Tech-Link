@@ -4,7 +4,10 @@
   "image": "https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=150&h=150",
   "featured": true,
   "badge": "FEATURED",
-  "tags": ["SHOPEE", "TOKOPEDIA"],
+  "tags": [
+    "SHOPEE",
+    "TOKOPEDIA"
+  ],
   "defaultUrl": "https://shopee.co.id",
   "description": "Pre-lubed stabilisator, triple-mode. Komponen esensial untuk meja ringkas.",
   "links": [
@@ -19,5 +22,8 @@
       "color": "green"
     }
   ],
-  "variant": "featured"
+  "variant": "featured",
+  "rating": 4.8,
+  "sold": 12,
+  "shortDesc": ""
 }
