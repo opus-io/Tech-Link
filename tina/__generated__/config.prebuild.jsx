@@ -1,21 +1,18 @@
+// tina/config.ts
 import { defineConfig } from "tinacms";
-
-// TinaCMS Configuration untuk Tech-Link-Final
-// Manage products dengan GUI admin panel
-
-export default defineConfig({
+var config_default = defineConfig({
   branch: "main",
   clientId: process.env.TINA_CLIENT_ID || "",
   token: process.env.TINA_TOKEN || "",
   build: {
     outputDir: "admin",
-    publicDir: "public",
+    publicDir: "public"
   },
   media: {
     tina: {
       mediaRoot: "uploads",
-      targetPath: "/images/",
-    },
+      targetPath: "/images/"
+    }
   },
   schema: {
     collections: [
@@ -29,8 +26,8 @@ export default defineConfig({
             readonly: false,
             slugify: (values) => {
               return values?.title?.toLowerCase().replace(/ /g, "-") || "product";
-            },
-          },
+            }
+          }
         },
         fields: [
           {
@@ -38,55 +35,55 @@ export default defineConfig({
             name: "title",
             label: "Product Name",
             isTitle: true,
-            required: true,
+            required: true
           },
           {
             type: "string",
             name: "imageAlt",
             label: "Image Alt Text",
-            required: true,
+            required: true
           },
           {
             type: "image",
             name: "image",
             label: "Product Image URL",
             description: "Paste URL gambar produk",
-            required: true,
+            required: true
           },
           {
             type: "boolean",
             name: "featured",
-            label: "Featured Product?",
+            label: "Featured Product?"
           },
           {
             type: "string",
             name: "badge",
             label: "Badge Label",
             description: 'Contoh: "FEATURED", "STANDARD_ISSUE", "NEW"',
-            required: true,
+            required: true
           },
           {
             type: "string",
             list: true,
             name: "tags",
             label: "Platform Tags",
-            description: 'Contoh: SHOPEE, TIKTOK, TOKOPEDIA',
+            description: "Contoh: SHOPEE, TIKTOK, TOKOPEDIA"
           },
           {
             type: "string",
             name: "defaultUrl",
             label: "Default URL",
             description: "URL yang terbuka saat klik gambar produk",
-            required: true,
+            required: true
           },
           {
             type: "string",
             name: "description",
             label: "Description",
             ui: {
-              component: "textarea",
+              component: "textarea"
             },
-            required: true,
+            required: true
           },
           {
             type: "object",
@@ -95,8 +92,8 @@ export default defineConfig({
             label: "Access Links",
             ui: {
               itemProps: (item) => ({
-                label: item?.label || "New Link",
-              }),
+                label: item?.label || "New Link"
+              })
             },
             fields: [
               {
@@ -104,13 +101,13 @@ export default defineConfig({
                 name: "label",
                 label: "Link Label",
                 description: 'Contoh: "ACCESS // SHOPEE"',
-                required: true,
+                required: true
               },
               {
                 type: "string",
                 name: "href",
                 label: "Link URL",
-                required: true,
+                required: true
               },
               {
                 type: "string",
@@ -118,10 +115,10 @@ export default defineConfig({
                 label: "Link Color",
                 options: ["amber", "green", "white"],
                 ui: {
-                  component: "radio",
-                },
-              },
-            ],
+                  component: "radio"
+                }
+              }
+            ]
           },
           {
             type: "string",
@@ -130,18 +127,18 @@ export default defineConfig({
             options: [
               {
                 label: "Featured (Highlight)",
-                value: "featured",
+                value: "featured"
               },
               {
                 label: "Standard",
-                value: "standard",
-              },
+                value: "standard"
+              }
             ],
             ui: {
-              component: "radio",
+              component: "radio"
             },
-            required: true,
-          },
+            required: true
+          }
         ],
         defaultItem: () => ({
           title: "New Product",
@@ -153,9 +150,12 @@ export default defineConfig({
           defaultUrl: "https://",
           description: "",
           links: [],
-          variant: "standard",
-        }),
-      },
-    ],
-  },
+          variant: "standard"
+        })
+      }
+    ]
+  }
 });
+export {
+  config_default as default
+};
