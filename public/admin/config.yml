@@ -2,8 +2,10 @@ backend:
   name: github
   branch: main
   repo: opus-io/Tech-Link
-  base_url: https://oauth.decap-cms.netlify.app
-  auth_endpoint: /auth
+
+# Saat login di admin panel, Decap CMS akan minta token GitHub
+# Buat token di: https://github.com/settings/tokens
+# Pilih scope: repo (full control) + user (read user data)
 
 media_folder: public/images
 public_folder: /images
