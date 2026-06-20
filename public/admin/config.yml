@@ -1,0 +1,48 @@
+backend:
+  name: github
+  branch: main
+  repo: opus-io/Tech-Link
+  base_url: https://api.github.com
+  auth_endpoint: /auth/device
+  # Untuk OAuth: isi client_id setelah buat GitHub OAuth App
+  # client_id: YOUR_GITHUB_OAUTH_CLIENT_ID
+
+media_folder: public/images
+public_folder: /images
+
+collections:
+  - name: "products"
+    label: "Products"
+    label_singular: "Product"
+    folder: "content/products"
+    create: true
+    delete: true
+    format: "json"
+    identifier_field: "title"
+    summary: "{{title}} - {{badge}}"
+    fields:
+      - { label: "Product Name", name: "title", widget: "string", required: true }
+      - { label: "Image Alt Text", name: "imageAlt", widget: "string", required: true }
+      - { label: "Product Image URL", name: "image", widget: "string", required: true,
+          pattern: ["https?://.+", "Must be a valid URL"] }
+      - { label: "Featured?", name: "featured", widget: "boolean", required: false, default: false }
+      - { label: "Badge", name: "badge", widget: "string", required: true,
+          default: "STANDARD_ISSUE" }
+      - { label: "Platform Tags", name: "tags", widget: "list", required: false,
+          field: { label: "Tag", name: "tag", widget: "string" } }
+      - { label: "Default URL", name: "defaultUrl", widget: "string", required: true,
+          pattern: ["https?://.+", "Must be a valid URL"] }
+      - { label: "Description", name: "description", widget: "text", required: true }
+      - label: "Access Links"
+        name: "links"
+        widget: "list"
+        required: true
+        fields:
+          - { label: "Link Label", name: "label", widget: "string", required: true,
+              default: "ACCESS //" }
+          - { label: "Link URL", name: "href", widget: "string", required: true,
+              pattern: ["https?://.+", "Must be a valid URL"] }
+          - { label: "Link Color", name: "color", widget: "select",
+              options: ["amber", "green", "white"], default: "white" }
+      - { label: "Variant", name: "variant", widget: "select",
+          options: ["featured", "standard"], default: "standard", required: true }
