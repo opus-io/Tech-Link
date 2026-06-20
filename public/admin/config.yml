@@ -2,10 +2,8 @@ backend:
   name: github
   branch: main
   repo: opus-io/Tech-Link
-  base_url: https://api.github.com
-  auth_endpoint: /auth/device
-  # Untuk OAuth: isi client_id setelah buat GitHub OAuth App
-  # client_id: YOUR_GITHUB_OAUTH_CLIENT_ID
+  base_url: https://oauth.decap-cms.netlify.app
+  auth_endpoint: /auth
 
 media_folder: public/images
 public_folder: /images
