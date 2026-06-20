@@ -1,22 +1,21 @@
 ---
 /**
- * ProductCard — Kartu produk dengan dual-action (klik cepat / buka accordion).
- *
- * - Klik pada area fast-lane akan membuka defaultUrl di tab baru.
- * - Klik tombol toggle akan membuka/menutup accordion dengan link akses.
+ * ProductCard — Kartu produk dengan dual-action + featured animation.
  */
 import LinkButton from "./LinkButton.astro";
 
 interface Props {
   product: Product;
+  index?: number;
 }
 
-const { product } = Astro.props;
+const { product, index = 0 } = Astro.props;
 
 const isFeatured = product.variant === "featured";
+const delay = index * 100 + 200;
 
 const variantClasses = isFeatured
-  ? "border border-gray-800 hover:border-amber-500/50 shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+  ? "border-amber-500/30 hover:border-amber-500/70 card-featured-glow"
   : "border border-gray-800 hover:border-gray-600 shadow-sm";
 
 const titleClasses = isFeatured
@@ -25,11 +24,17 @@ const titleClasses = isFeatured
 ---
 
 <div
-  class={`product-card relative bg-[#121212] rounded-[13px] overflow-hidden transition-all group ${variantClasses}`}
+  class={`product-card relative bg-[#121212] rounded-[13px] overflow-hidden transition-all duration-300 group ${variantClasses}`}
   data-url={product.defaultUrl}
   role="article"
   aria-label={`Product: ${product.title}`}
+  style={`animation-delay: ${delay}ms`}
 >
+  <!-- Featured glow overlay -->
+  {isFeatured && (
+    <div class="absolute inset-0 rounded-[13px] pointer-events-none card-glow-overlay" />
+  )}
+
   <div
     class="absolute top-0 right-0 bg-[#1A1A1A] border-b border-l border-gray-800 px-2 py-1 rounded-bl-lg z-20"
   >

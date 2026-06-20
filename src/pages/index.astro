@@ -5,6 +5,13 @@ import ProfileHeader from "../components/ProfileHeader.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import ProductCard from "../components/ProductCard.astro";
 import { products } from "../data/products";
+
+// Sort: featured products first
+const sortedProducts = [...products].sort((a, b) => {
+  if (a.featured && !b.featured) return -1;
+  if (!a.featured && b.featured) return 1;
+  return 0;
+});
 ---
 
 <BaseLayout title="@artifak.tech - Advanced Industrial OS">
@@ -16,7 +23,9 @@ import { products } from "../data/products";
     <SectionHeading title="System_Links //" />
 
     <main class="flex flex-col gap-[21px]">
-      {products.map((product) => <ProductCard product={product} />)}
+      {sortedProducts.map((product, index) => (
+        <ProductCard product={product} index={index} />
+      ))}
     </main>
   </div>
 </BaseLayout>
