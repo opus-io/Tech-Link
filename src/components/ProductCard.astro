@@ -120,17 +120,16 @@ const titleClasses = isFeatured
             {product.tags.map((tag) => {
               const logoPath = getPlatformLogo(tag);
               return (
-                <span class="inline-flex items-center gap-1 bg-[#1A1A1A] border border-gray-700 px-[6px] py-[3px] rounded-sm">
-                  {logoPath ? (
+                <span class="inline-flex items-center gap-1.5 bg-[#1A1A1A] border border-gray-700 px-[7px] py-[3px] rounded-sm">
+                  {logoPath && (
                     <img
                       src={logoPath}
-                      alt={tag}
-                      class="w-[14px] h-[14px] object-contain"
+                      alt=""
+                      class="w-[13px] h-[13px] object-contain"
                       loading="lazy"
                     />
-                  ) : (
-                    <span class="text-[9px] font-robotic text-gray-400">{tag}</span>
                   )}
+                  <span class="text-[9px] font-robotic text-gray-400">{tag}</span>
                 </span>
               );
             })}

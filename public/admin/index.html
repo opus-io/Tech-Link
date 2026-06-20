@@ -515,11 +515,11 @@
         </div>
         <div class="field">
           <label>Rating ★ (1-5)</label>
-          <input id="f-rating" type="number" step="0.1" min="0" max="5" value="${data.rating || ''}" placeholder="4.8" style="max-width:100px" />
+          <input id="f-rating" type="number" step="0.1" min="0" max="5" value="${data.rating != null ? data.rating : ''}" placeholder="4.8" style="max-width:100px" />
         </div>
         <div class="field">
           <label>Total Terjual</label>
-          <input id="f-sold" type="number" min="0" value="${data.sold || ''}" placeholder="15000" style="max-width:150px" />
+          <input id="f-sold" type="number" min="0" value="${data.sold != null ? data.sold : ''}" placeholder="15000" style="max-width:150px" />
         </div>
         <div class="field">
           <label>Short Description (tampil di card)</label>
@@ -599,9 +599,9 @@
         description: $('f-description').value.trim(),
         links,
         variant: $('f-variant').value,
-        rating: parseFloat($('f-rating').value) || 0,
-        sold: parseInt($('f-sold').value) || 0,
-        shortDesc: $('f-shortDesc').value.trim(),
+        rating: parseFloat($('f-rating').value) || undefined,
+        sold: parseInt($('f-sold').value) || undefined,
+        shortDesc: $('f-shortDesc').value.trim() || undefined,
       };
     }
 
