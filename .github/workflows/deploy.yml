@@ -1,53 +1,77 @@
-name: Deploy Astro site to GitHub Pages
+name: Build & Deploy Astro
 
 on:
-  # Trigger workflow setiap push ke branch main
   push:
     branches: [main]
-  # Dan juga bisa dijalankan manual dari tab Actions
-  workflow_dispatch:
+  pull_request:
+    branches: [main]
 
-# Izinkan 1 job berjalan pada satu waktu (untuk antrian deploy)
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: pages
+  cancel-in-progress: true
+
+env:
+  BUILD_PATH: "."
 
 jobs:
   build:
-    name: Build Astro
+    name: Build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Detect package manager
+        id: detect-pm
+        run: |
+          if [ -f "${{ env.BUILD_PATH }}/yarn.lock" ]; then
+            echo "pm=yarn" >> $GITHUB_OUTPUT
+          elif [ -f "${{ env.BUILD_PATH }}/pnpm-lock.yaml" ]; then
+            echo "pm=pnpm" >> $GITHUB_OUTPUT
+          elif [ -f "${{ env.BUILD_PATH }}/package-lock.json" ]; then
+            echo "pm=npm" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          node-version: 20
-          cache: "npm"
+          node-version: "18"
+          cache: ${{ steps.detect-pm.outputs.pm || 'npm' }}
+          cache-dependency-path: ${{ env.BUILD_PATH }}/package-lock.json
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v3
 
       - name: Install dependencies
         run: npm ci
+        working-directory: ${{ env.BUILD_PATH }}
 
-      - name: Build site
+      - name: Build with Astro
         run: npm run build
+        working-directory: ${{ env.BUILD_PATH }}
+        env:
+          TINA_CLIENT_ID: ${{ secrets.TINA_CLIENT_ID }}
+          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v2
         with:
-          path: ./dist
+          path: ${{ env.BUILD_PATH }}/dist
 
   deploy:
-    name: Deploy to GitHub Pages
-    needs: build
-    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    permissions:
-      pages: write
-      id-token: write
+    needs: build
+    runs-on: ubuntu-latest
+    name: Deploy
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v2

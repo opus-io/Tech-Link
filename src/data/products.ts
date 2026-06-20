@@ -1,38 +1,40 @@
 /**
  * Data produk yang ditampilkan di halaman Linktree Affiliate.
- * Ubah atau tambahkan entri di sini untuk memperbarui konten halaman.
+ * 
+ * Data dimuat dari folder `/content/products/` (dikelola via TinaCMS).
+ * TinaCMS akan auto-generate JSON files saat edit via admin panel.
+ * 
+ * Development: Data di-import langsung dari JSON files
+ * Build-time: Astro akan compile semua JSON ke static HTML
  */
-export const products: Product[] = [
-  {
-    id: "01",
-    image:
-      "https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=150&h=150",
-    imageAlt: "Mechanical Keyboard 65%",
-    featured: true,
-    badge: "FEATURED",
-    title: "Mechanical Keyboard 65%",
-    tags: ["SHOPEE", "TOKOPEDIA"],
-    defaultUrl: "https://shopee.co.id",
-    description:
-      "Pre-lubed stabilisator, triple-mode. Komponen esensial untuk meja ringkas.",
-    links: [
-      { label: "ACCESS // SHOPEE", href: "#", color: "amber" },
-      { label: "ACCESS // TOKOPEDIA", href: "#", color: "green" },
-    ],
-    variant: "featured",
-  },
-  {
-    id: "02",
-    image:
-      "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=150&h=150",
-    imageAlt: "Buku Filosofi Teras",
-    badge: "STANDARD_ISSUE",
-    title: "Filosofi Teras",
-    tags: ["TIKTOK"],
-    defaultUrl: "https://tiktok.com",
-    description:
-      "Modul stoikisme praktis. Esensial untuk stabilitas sistem mental.",
-    links: [{ label: "ACCESS // TIKTOK", href: "#", color: "white" }],
-    variant: "standard",
-  },
-];
+
+// Import product JSON files dari content/products
+import keyboardData from "../../content/products/keyboard.json";
+import bookData from "../../content/products/book.json";
+
+// Helper function untuk generate unique ID
+function generateProductId(index: number): string {
+  return String(index + 1).padStart(2, "0");
+}
+
+// Load products dari JSON files dengan ID auto-generate
+const productDataArray = [keyboardData, bookData];
+
+export const products: Product[] = productDataArray.map((data, index) => ({
+  id: generateProductId(index),
+  ...data,
+}));
+
+/**
+ * Catatan Penting:
+ * 
+ * Setelah TinaCMS setup:
+ * 1. Setiap file JSON baru di /content/products/ perlu di-import di sini
+ * 2. Atau: Gunakan dynamic import di Astro untuk auto-load (lihat komentar di bawah)
+ * 
+ * Future improvement: Auto-load semua JSON di /content/products/:
+ * 
+ * import { glob } from "astro/loaders";
+ * const allProducts = await glob("../../content/products/*.json");
+ * export const products = allProducts.map(file => ({...}));
+ */
