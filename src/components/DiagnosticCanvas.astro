@@ -27,6 +27,8 @@ const tagsJson = JSON.stringify(diagnosticTags);
 <div
   class="absolute top-0 left-0 w-full h-[34vh] z-0 overflow-hidden bg-[#0A0A0C] border-b border-[#2A2A2A]"
   aria-hidden="true"
+  data-lines={linesJson}
+  data-tags={tagsJson}
 >
   <canvas
     id="diagnosticCanvas"
@@ -39,10 +41,12 @@ const tagsJson = JSON.stringify(diagnosticTags);
   </div>
 </div>
 <script>
-  var diagnosticLines = JSON.parse('{linesJson}');
-  var diagnosticTags = JSON.parse('{tagsJson}');
-
   function initDiagnosticCanvas() {
+    var container = document.querySelector('[data-lines]');
+    var diagnosticLines = container ? JSON.parse(container.getAttribute('data-lines')) : [];
+    var diagnosticTags = container ? JSON.parse(container.getAttribute('data-tags')) : [];
+    if (!diagnosticLines.length) diagnosticLines = ["> INIT: PRODUCT DIRECTORY...","> LOAD: MECHANICAL SETUPS...","> SYNC: AFFILIATE STREAMS...","> AUTH: SYSTEM VERIFIED."];
+    if (!diagnosticTags.length) diagnosticTags = ["SYS.V.2.0.4 // ONLINE","MODULE // SECURE","UPTIME // 047:21:18","NODES // CONNECTED","SIGNAL // 98.7%","ENCRYPT // AES-256"];
     var canvas = document.getElementById("diagnosticCanvas");
     if (!canvas) return;
     var ctx = canvas.getContext("2d");
