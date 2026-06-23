@@ -6,7 +6,6 @@ import SectionHeading from "../components/SectionHeading.astro";
 import ProductCard from "../components/ProductCard.astro";
 import { products } from "../data/products";
 
-// Sort: featured products first
 const sortedProducts = [...products].sort((a, b) => {
   if (a.featured && !b.featured) return -1;
   if (!a.featured && b.featured) return 1;

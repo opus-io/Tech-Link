@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://api.github.com https://raw.githubusercontent.com; img-src 'self' https: data:; frame-src *; base-uri 'self'; form-action 'none';" />
   <title>Admin - Tech-Link</title>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
   <style>
@@ -24,11 +25,11 @@
       min-height: 100vh;
       padding: 21px;
     }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-    }
-    
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); }
+    .container { max-width: 800px; margin: 0 auto; }
+
     /* Login */
     .login-box {
       background: var(--bg2);
@@ -41,35 +42,20 @@
     .login-box h1 { font-size: 24px; margin-bottom: 21px; color: var(--amber); }
     .login-box p { color: var(--text2); font-size: 12px; margin-bottom: 13px; }
     .login-box input {
-      width: 100%;
-      max-width: 400px;
-      padding: 13px;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: inherit;
-      font-size: 13px;
-      border-radius: 4px;
-      margin-bottom: 13px;
+      width: 100%; max-width: 400px; padding: 13px;
+      background: var(--bg3); border: 1px solid var(--border);
+      color: var(--text); font-family: inherit; font-size: 13px;
+      border-radius: 4px; margin-bottom: 13px;
     }
     .login-box input:focus { outline: none; border-color: var(--amber); }
-    .login-box .help {
-      font-size: 11px;
-      color: var(--text2);
-      margin-bottom: 13px;
-    }
+    .login-box .help { font-size: 11px; color: var(--text2); margin-bottom: 13px; }
     .login-box .help a { color: var(--amber); }
-    
+
     /* Buttons */
     .btn {
-      padding: 13px 34px;
-      border: 1px solid var(--border);
-      background: var(--bg3);
-      color: var(--text);
-      font-family: inherit;
-      font-size: 13px;
-      cursor: pointer;
-      border-radius: 4px;
+      padding: 13px 34px; border: 1px solid var(--border);
+      background: var(--bg3); color: var(--text); font-family: inherit;
+      font-size: 13px; cursor: pointer; border-radius: 4px;
       transition: all 0.2s;
     }
     .btn:hover { border-color: var(--amber); color: var(--amber); }
@@ -78,14 +64,13 @@
     .btn-danger { border-color: #ef4444; color: #ef4444; }
     .btn-danger:hover { background: #ef4444; color: #fff; }
     .btn-sm { padding: 8px 16px; font-size: 11px; }
+    .btn-green { border-color: var(--green); color: var(--green); }
+    .btn-green:hover { background: var(--green); color: #000; }
 
     /* Header */
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 34px;
-      padding-bottom: 13px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 34px; padding-bottom: 13px;
       border-bottom: 1px solid var(--border);
     }
     .header h1 { font-size: 18px; color: var(--amber); }
@@ -93,136 +78,146 @@
     .header .logout { color: var(--text2); cursor: pointer; font-size: 11px; }
     .header .logout:hover { color: var(--amber); }
 
+    /* Tabs */
+    .tabs {
+      display: flex; gap: 8px; margin-bottom: 21px;
+      border-bottom: 1px solid var(--border); padding-bottom: 8px;
+    }
+    .tab {
+      padding: 8px 21px; cursor: pointer; font-size: 12px;
+      color: var(--text2); border: 1px solid transparent;
+      border-radius: 4px; transition: all 0.2s;
+    }
+    .tab:hover { color: var(--text); border-color: var(--border); }
+    .tab.active { color: var(--amber); border-color: var(--amber); background: var(--bg3); }
+
+    /* Section */
+    .section { display: none; }
+    .section.active { display: block; }
+
     /* Products */
     .toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 21px;
     }
     .toolbar .count { font-size: 12px; color: var(--text2); }
-
-    .product-list {
-      display: flex;
-      flex-direction: column;
-      gap: 13px;
-    }
+    .product-list { display: flex; flex-direction: column; gap: 13px; }
     .product-item {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 13px 21px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 13px 21px;
+      display: flex; justify-content: space-between; align-items: center;
       transition: all 0.2s;
     }
     .product-item:hover { border-color: var(--amber); }
     .product-item .info h3 { font-size: 14px; color: var(--text); }
-    .product-item .info .meta {
-      font-size: 11px;
-      color: var(--text2);
-      margin-top: 4px;
-    }
-    .product-item .info .meta .featured-badge {
-      color: var(--amber);
-      margin-right: 8px;
-    }
+    .product-item .info .meta { font-size: 11px; color: var(--text2); margin-top: 4px; }
+    .product-item .info .meta .featured-badge { color: var(--amber); margin-right: 8px; }
     .product-item .actions { display: flex; gap: 8px; }
 
     /* Form Modal */
     .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.8);
-      z-index: 100;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 34px 21px;
-      overflow-y: auto;
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.8); z-index: 100;
+      align-items: flex-start; justify-content: center;
+      padding: 34px 21px; overflow-y: auto;
     }
     .modal-overlay.active { display: flex; }
     .modal {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 34px;
-      width: 100%;
-      max-width: 600px;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 34px; width: 100%; max-width: 600px;
       margin-top: 5vh;
     }
     .modal h2 { font-size: 18px; color: var(--amber); margin-bottom: 21px; }
     .modal .field { margin-bottom: 13px; }
     .modal .field label {
-      display: block;
-      font-size: 11px;
-      color: var(--text2);
-      margin-bottom: 4px;
+      display: block; font-size: 11px; color: var(--text2); margin-bottom: 4px;
     }
-    .modal .field input,
-    .modal .field textarea,
-    .modal .field select {
-      width: 100%;
-      padding: 10px;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-family: inherit;
-      font-size: 12px;
-      border-radius: 4px;
+    .modal .field input, .modal .field textarea, .modal .field select {
+      width: 100%; padding: 10px; background: var(--bg3);
+      border: 1px solid var(--border); color: var(--text);
+      font-family: inherit; font-size: 12px; border-radius: 4px;
     }
-    .modal .field input:focus,
-    .modal .field textarea:focus { outline: none; border-color: var(--amber); }
+    .modal .field input:focus, .modal .field textarea:focus { outline: none; border-color: var(--amber); }
     .modal .field textarea { min-height: 60px; resize: vertical; }
-    .modal .field.checkbox {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .modal .field.checkbox { display: flex; align-items: center; gap: 8px; }
     .modal .field.checkbox input { width: auto; }
     .modal .field.checkbox label { margin-bottom: 0; cursor: pointer; }
-    .modal .field-row {
-      display: flex;
-      gap: 13px;
-    }
+    .modal .field-row { display: flex; gap: 13px; }
     .modal .field-row .field { flex: 1; }
     .modal .form-actions {
-      display: flex;
-      gap: 13px;
-      justify-content: flex-end;
-      margin-top: 21px;
+      display: flex; gap: 13px; justify-content: flex-end; margin-top: 21px;
     }
     .modal .sub-list { margin-top: 8px; }
     .modal .sub-item {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 8px;
+      display: flex; gap: 8px; align-items: center; margin-bottom: 8px;
     }
-    .modal .sub-item input,
-    .modal .sub-item select { flex: 1; }
+    .modal .sub-item input, .modal .sub-item select { flex: 1; }
     .modal .sub-item .btn-sm { flex: 0; }
     .modal .add-sub { margin-top: 4px; }
 
+    /* Config */
+    .config-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 13px;
+    }
+    .config-grid .full { grid-column: 1 / -1; }
+    .config-section {
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 21px; margin-bottom: 21px;
+    }
+    .config-section h3 {
+      font-size: 14px; color: var(--amber); margin-bottom: 13px;
+      padding-bottom: 8px; border-bottom: 1px solid var(--border);
+    }
+    .config-section .field { margin-bottom: 13px; }
+    .config-section .field label {
+      display: block; font-size: 11px; color: var(--text2); margin-bottom: 4px;
+    }
+    .config-section .field input, .config-section .field textarea {
+      width: 100%; padding: 10px; background: var(--bg3);
+      border: 1px solid var(--border); color: var(--text);
+      font-family: inherit; font-size: 12px; border-radius: 4px;
+    }
+    .config-section .field input:focus { outline: none; border-color: var(--amber); }
+
+    /* Logo manager */
+    .logo-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 13px;
+    }
+    .logo-card {
+      background: var(--bg3); border: 1px solid var(--border);
+      border-radius: 8px; padding: 13px; text-align: center;
+    }
+    .logo-card img {
+      width: 55px; height: 55px; object-fit: contain;
+      margin-bottom: 8px; background: #0a0a0c;
+      border-radius: 4px; padding: 4px;
+    }
+    .logo-card .logo-name { font-size: 11px; color: var(--text2); margin-bottom: 8px; }
+    .logo-card input { width: 100%; padding: 6px; background: var(--bg);
+      border: 1px solid var(--border); color: var(--text);
+      font-family: inherit; font-size: 10px; border-radius: 4px; margin-bottom: 8px;
+    }
+    .logo-card .btn-sm { font-size: 10px; padding: 6px 12px; }
+
+    /* Live Preview */
+    .preview-frame {
+      width: 100%; height: 600px; border: 1px solid var(--border);
+      border-radius: 8px; background: #fff; margin-top: 13px;
+    }
+
     /* Status */
     .toast {
-      position: fixed;
-      bottom: 34px;
-      right: 34px;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      padding: 13px 21px;
-      border-radius: 4px;
-      font-size: 12px;
-      z-index: 200;
-      transition: all 0.3s;
-      opacity: 0;
-      transform: translateY(10px);
+      position: fixed; bottom: 34px; right: 34px;
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 13px 21px; border-radius: 4px; font-size: 12px;
+      z-index: 200; transition: all 0.3s;
+      opacity: 0; transform: translateY(10px);
     }
     .toast.show { opacity: 1; transform: translateY(0); }
     .toast.success { border-color: var(--green); }
     .toast.error { border-color: #ef4444; }
+
+    .empty-state { color: #666; text-align: center; padding: 55px; font-size: 13px; }
   </style>
 </head>
 <body>
@@ -231,13 +226,13 @@
     <div id="loginSection" class="login-box">
       <h1>[ TECH-LINK ADMIN ]</h1>
       <p>Masukkan GitHub Personal Access Token</p>
-      <input type="password" id="tokenInput" placeholder="ghp_xxxxx..." />
+      <input type="password" id="tokenInput" placeholder="github_pat_xxxxx..." />
       <div class="help">
-        Token perlu scope: <strong>repo</strong>
-        <br/>
-        <a href="https://github.com/settings/tokens" target="_blank">Buat token di sini</a>
+        Token perlu scope: <strong>repo</strong><br/>
+        <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">Buat token di sini</a>
       </div>
-      <button class="btn btn-primary" onclick="login()">LOGIN</button>
+      <div id="loginError" style="color:#ef4444;font-size:12px;margin-bottom:13px;display:none"></div>
+      <button class="btn btn-primary" id="loginBtn">LOGIN</button>
     </div>
 
     <!-- Dashboard -->
@@ -247,15 +242,77 @@
           <h1>[ ADMIN ]</h1>
           <div class="user-info" id="userInfo"></div>
         </div>
-        <span class="logout" onclick="logout()">LOGOUT //</span>
+        <span class="logout" id="logoutBtn">LOGOUT //</span>
       </div>
 
-      <div class="toolbar">
-        <span class="count" id="productCount">0 products</span>
-        <button class="btn btn-primary" onclick="showAddForm()">+ NEW PRODUCT</button>
+      <!-- Tabs -->
+      <div class="tabs">
+        <span class="tab active" data-tab="tabProducts">Products</span>
+        <span class="tab" data-tab="tabConfig">Configuration</span>
+        <span class="tab" data-tab="tabLogos">Logos</span>
+        <span class="tab" data-tab="tabPreview">Preview</span>
       </div>
 
-      <div class="product-list" id="productList"></div>
+      <!-- TAB: Products -->
+      <div class="section active" id="tabProducts">
+        <div class="toolbar">
+          <span class="count" id="productCount">0 products</span>
+          <button class="btn btn-primary" onclick="showAddForm()">+ NEW PRODUCT</button>
+        </div>
+        <div class="product-list" id="productList"></div>
+      </div>
+
+      <!-- TAB: Configuration -->
+      <div class="section" id="tabConfig">
+        <div class="config-section">
+          <h3>Site Settings</h3>
+          <div class="config-grid">
+            <div class="field full">
+              <label>Site Name</label>
+              <input type="text" id="cfg-siteName" placeholder="@artifak.tech" />
+            </div>
+            <div class="field full">
+              <label>Tagline</label>
+              <input type="text" id="cfg-tagline" placeholder="CURATED DESK SETUPS." />
+            </div>
+            <div class="field full">
+              <label>Avatar URL</label>
+              <input type="text" id="cfg-avatarUrl" placeholder="https://..." />
+            </div>
+            <div class="field">
+              <label>Accent Color</label>
+              <input type="text" id="cfg-accentColor" placeholder="#f59e0b" />
+            </div>
+            <div class="field">
+              <label>BG Primary</label>
+              <input type="text" id="cfg-bgPrimary" placeholder="#0a0a0c" />
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="saveConfig()">SAVE CONFIG</button>
+        </div>
+      </div>
+
+      <!-- TAB: Logos -->
+      <div class="section" id="tabLogos">
+        <div class="config-section">
+          <h3>Platform Logos</h3>
+          <p style="font-size:11px;color:var(--text2);margin-bottom:13px">
+            Upload logo untuk tiap platform. Logo akan disimpan di <code>public/logos/</code>.
+          </p>
+          <div class="logo-grid" id="logoGrid"></div>
+        </div>
+      </div>
+
+      <!-- TAB: Preview -->
+      <div class="section" id="tabPreview">
+        <div class="config-section">
+          <h3>Live Preview</h3>
+          <p style="font-size:11px;color:var(--text2);margin-bottom:13px">
+            Preview halaman utama setelah perubahan di-save.
+          </p>
+          <iframe id="previewFrame" class="preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -280,13 +337,17 @@
     const REPO = 'Tech-Link';
     const BRANCH = 'main';
     const PRODUCTS_PATH = 'content/products';
+    const CONFIG_PATH = 'content/config.json';
+    const LOGOS_PATH = 'public/logos';
 
     let token = '';
     let products = [];
     let editingIndex = -1;
+    let config = {};
+    let logoKeys = ['SHOPEE', 'TOKOPEDIA', 'TIKTOK'];
 
     // ---------- UTILS ----------
-    function $(id) { return document.getElementById(id); }
+    const $ = id => document.getElementById(id);
 
     function toast(msg, type = 'success') {
       const el = $('toast');
@@ -302,21 +363,44 @@
       return () => { btn.disabled = false; btn.textContent = orig; };
     }
 
+    // ---------- TABS ----------
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        $(tab.dataset.tab).classList.add('active');
+        if (tab.dataset.tab === 'tabPreview') loadPreview();
+        if (tab.dataset.tab === 'tabLogos') renderLogoGrid();
+        if (tab.dataset.tab === 'tabConfig') loadConfigForm();
+      });
+    });
+
     // ---------- AUTH ----------
     function login() {
       const t = $('tokenInput').value.trim();
-      if (!t) { toast('Masukkan token!', 'error'); return; }
+      if (!t) { showLoginError('Masukkan token!'); return; }
       token = t;
-      localStorage.setItem('techlink_token', token);
+      sessionStorage.setItem('techlink_token', token);
       loadDashboard();
+    }
+
+    $('loginBtn').addEventListener('click', login);
+    $('tokenInput').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+
+    function showLoginError(msg) {
+      const el = $('loginError');
+      el.textContent = msg;
+      el.style.display = '';
     }
 
     function logout() {
       token = '';
-      localStorage.removeItem('techlink_token');
+      sessionStorage.removeItem('techlink_token');
       $('loginSection').style.display = '';
       $('dashboardSection').style.display = 'none';
     }
+    $('logoutBtn').addEventListener('click', logout);
 
     // ---------- GITHUB API ----------
     async function ghFetch(url, options = {}) {
@@ -360,14 +444,12 @@
     async function commitFile(path, content, message) {
       let sha = null;
       try { sha = await getSha(path); } catch {}
-
       const body = {
         message,
         content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
         branch: BRANCH,
       };
       if (sha) body.sha = sha;
-
       const url = '/repos/' + OWNER + '/' + REPO + '/contents/' + path;
       return ghFetch(url, { method: 'PUT', body: JSON.stringify(body) });
     }
@@ -381,17 +463,151 @@
       });
     }
 
+    async function uploadFileToGitHub(file, folder) {
+      const reader = new FileReader();
+      const base64 = await new Promise((resolve, reject) => {
+        reader.onload = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      const ext = file.name.split('.').pop();
+      const safeName = Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const path = folder + '/' + safeName;
+      await ghFetch('/repos/' + OWNER + '/' + REPO + '/contents/' + path, {
+        method: 'PUT',
+        body: JSON.stringify({
+          message: 'Upload logo: ' + file.name,
+          content: base64,
+          branch: BRANCH,
+        }),
+      });
+      return 'https://raw.githubusercontent.com/' + OWNER + '/' + REPO + '/main/' + path;
+    }
+
+    function pickFile(accept, handler) {
+      const input = document.createElement('input');
+      input.type = 'file';
+      if (accept) input.accept = accept;
+      input.onchange = async () => {
+        const file = input.files[0];
+        if (!file) return;
+        try {
+          const url = await uploadFileToGitHub(file, LOGOS_PATH);
+          handler(url, file);
+        } catch(e) {
+          toast('Upload failed: ' + e.message, 'error');
+        }
+      };
+      input.click();
+    }
+
     function slugify(text) {
       return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'product';
+    }
+
+    // ---------- CONFIG ----------
+    async function loadConfig() {
+      try {
+        const data = await ghFetch('/repos/' + OWNER + '/' + REPO + '/contents/' + CONFIG_PATH + '?ref=' + BRANCH);
+        const decoded = atob(data.content.replace(/\n/g, ''));
+        config = JSON.parse(decoded);
+      } catch {
+        config = {
+          siteName: '@artifak.tech',
+          tagline: 'CURATED DESK SETUPS.',
+          avatarUrl: '',
+          accentColor: '#f59e0b',
+          bgPrimary: '#0a0a0c',
+          logos: {}
+        };
+      }
+      if (!config.logos) config.logos = {};
+      logoKeys.forEach(key => {
+        if (!config.logos[key]) config.logos[key] = '';
+      });
+    }
+
+    function loadConfigForm() {
+      $('cfg-siteName').value = config.siteName || '';
+      $('cfg-tagline').value = config.tagline || '';
+      $('cfg-avatarUrl').value = config.avatarUrl || '';
+      $('cfg-accentColor').value = config.accentColor || '#f59e0b';
+      $('cfg-bgPrimary').value = config.bgPrimary || '#0a0a0c';
+    }
+
+    async function saveConfig() {
+      const updated = {
+        siteName: $('cfg-siteName').value.trim(),
+        tagline: $('cfg-tagline').value.trim(),
+        avatarUrl: $('cfg-avatarUrl').value.trim(),
+        accentColor: $('cfg-accentColor').value.trim(),
+        bgPrimary: $('cfg-bgPrimary').value.trim(),
+        logos: config.logos || {}
+      };
+      try {
+        await commitFile(CONFIG_PATH, updated, 'Update site config');
+        config = updated;
+        toast('Config saved!');
+      } catch (e) {
+        toast('Error: ' + e.message, 'error');
+      }
+    }
+
+    // ---------- LOGOS ----------
+    function renderLogoGrid() {
+      const grid = $('logoGrid');
+      grid.innerHTML = logoKeys.map(key => `
+        <div class="logo-card">
+          <img src="${config.logos[key] || ''}" alt="${key}" onerror="this.style.display='none'" />
+          <div class="logo-name">${key}</div>
+          <input type="text" id="logo-url-${key}" value="${(config.logos[key] || '').replace(/"/g, '&quot;')}" placeholder="Logo URL" />
+          <div style="display:flex;gap:8px;justify-content:center">
+            <button class="btn btn-sm" onclick="updateLogoUrl('${key}')">SAVE</button>
+            <button class="btn btn-sm btn-green" onclick="uploadLogo('${key}')">UPLOAD</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function updateLogoUrl(key) {
+      const url = $('logo-url-' + key).value.trim();
+      if (!url) { toast('Masukkan URL!', 'error'); return; }
+      config.logos[key] = url;
+      try {
+        await commitFile(CONFIG_PATH, {
+          ...config,
+          logos: config.logos
+        }, 'Update logo: ' + key);
+        toast(key + ' logo updated!');
+        renderLogoGrid();
+      } catch (e) {
+        toast('Error: ' + e.message, 'error');
+      }
+    }
+
+    function uploadLogo(key) {
+      pickFile('image/*', async (url) => {
+        config.logos[key] = url;
+        try {
+          await commitFile(CONFIG_PATH, {
+            ...config,
+            logos: config.logos
+          }, 'Upload logo: ' + key);
+          toast(key + ' logo uploaded!');
+          renderLogoGrid();
+        } catch (e) {
+          toast('Error: ' + e.message, 'error');
+        }
+      });
     }
 
     // ---------- LOAD ----------
     async function loadDashboard() {
       $('loginSection').style.display = 'none';
       $('dashboardSection').style.display = '';
+      $('loginError').style.display = 'none';
 
       try {
-        // Verify token
         const user = await ghFetch('/user');
         $('userInfo').textContent = 'Logged in as: ' + user.login;
       } catch (e) {
@@ -400,20 +616,20 @@
         return;
       }
 
+      await loadConfig();
       await loadProducts();
+      loadConfigForm();
     }
 
     async function loadProducts() {
       const files = await getProductFiles();
       products = [];
-
       for (const f of files) {
         try {
           const data = await getFileContent(f);
           products.push({ ...data, _file: f.name });
-        } catch { /* skip corrupt files */ }
+        } catch { /* skip corrupt */ }
       }
-
       renderProducts();
     }
 
@@ -422,7 +638,7 @@
       $('productCount').textContent = products.length + ' products';
 
       if (products.length === 0) {
-        list.innerHTML = '<div style="color:#666;text-align:center;padding:55px;font-size:13px">No products yet. Click "+ NEW PRODUCT" to start.</div>';
+        list.innerHTML = '<div class="empty-state">No products yet. Click "+ NEW PRODUCT" to start.</div>';
         return;
       }
 
@@ -513,13 +729,15 @@
           <input type="checkbox" id="f-featured" ${data.featured?'checked':''} />
           <label for="f-featured">Featured Product?</label>
         </div>
-        <div class="field">
-          <label>Rating ★ (1-5)</label>
-          <input id="f-rating" type="number" step="0.1" min="0" max="5" value="${data.rating != null ? data.rating : ''}" placeholder="4.8" style="max-width:100px" />
-        </div>
-        <div class="field">
-          <label>Total Terjual</label>
-          <input id="f-sold" type="number" min="0" value="${data.sold != null ? data.sold : ''}" placeholder="15000" style="max-width:150px" />
+        <div class="field-row">
+          <div class="field">
+            <label>Rating ★ (1-5)</label>
+            <input id="f-rating" type="number" step="0.1" min="0" max="5" value="${data.rating != null ? data.rating : ''}" placeholder="4.8" />
+          </div>
+          <div class="field">
+            <label>Total Terjual</label>
+            <input id="f-sold" type="number" min="0" value="${data.sold != null ? data.sold : ''}" placeholder="15000" />
+          </div>
         </div>
         <div class="field">
           <label>Short Description (tampil di card)</label>
@@ -550,7 +768,6 @@
 
     function addLink() {
       const container = $('linksContainer');
-      const idx = container.children.length;
       const div = document.createElement('div');
       div.className = 'sub-item';
       div.innerHTML = `
@@ -580,9 +797,7 @@
         const label = item.querySelector('.link-label').value.trim();
         const href = item.querySelector('.link-href').value.trim();
         const color = item.querySelector('.link-color').value;
-        if (label && href) {
-          links.push({ label, href, color });
-        }
+        if (label && href) links.push({ label, href, color });
       }
 
       const tagsStr = $('f-tags').value.trim();
@@ -619,7 +834,6 @@
         const filename = slugify(data.title) + '.json';
 
         if (editingIndex >= 0) {
-          // Edit existing - delete old file if name changed
           const oldFile = products[editingIndex]._file;
           if (oldFile !== filename) {
             await deleteFile(PRODUCTS_PATH + '/' + oldFile, 'Delete: ' + products[editingIndex].title);
@@ -627,8 +841,7 @@
         }
 
         await commitFile(
-          PRODUCTS_PATH + '/' + filename,
-          data,
+          PRODUCTS_PATH + '/' + filename, data,
           editingIndex >= 0 ? 'Update: ' + data.title : 'Add: ' + data.title
         );
 
@@ -645,12 +858,8 @@
     // ---------- DELETE ----------
     async function deleteProduct(index) {
       if (!confirm('Delete "' + products[index].title + '"?')) return;
-
       try {
-        await deleteFile(
-          PRODUCTS_PATH + '/' + products[index]._file,
-          'Delete: ' + products[index].title
-        );
+        await deleteFile(PRODUCTS_PATH + '/' + products[index]._file, 'Delete: ' + products[index].title);
         toast('Product deleted!');
         await loadProducts();
       } catch (e) {
@@ -658,24 +867,23 @@
       }
     }
 
-    // ---------- MISC ----------
-    function closeModal() {
-      $('modal').classList.remove('active');
+    // ---------- PREVIEW ----------
+    function loadPreview() {
+      const frame = $('previewFrame');
+      const siteUrl = 'https://' + OWNER + '.github.io/' + REPO + '/';
+      frame.src = siteUrl;
     }
 
-    // Click outside modal to close
-    $('modal').addEventListener('click', (e) => {
-      if (e.target === $('modal')) closeModal();
-    });
+    // ---------- MISC ----------
+    function closeModal() { $('modal').classList.remove('active'); }
+    $('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeModal(); });
 
     // ---------- INIT ----------
-    // Auto-login from localStorage
-    const saved = localStorage.getItem('techlink_token');
+    const saved = sessionStorage.getItem('techlink_token');
     if (saved) {
       token = saved;
       $('tokenInput').value = saved;
       loadDashboard();
-      document.fonts.ready.then(() => {/* just wait */});
     }
   </script>
 </body>

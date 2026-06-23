@@ -1,0 +1,12 @@
+{
+  "siteName": "@artifak.tech",
+  "tagline": "CURATED DESK SETUPS.",
+  "avatarUrl": "https://images.unsplash.com/photo-1632292224971-0d45778b3af9?auto=format&fit=crop&w=150&h=150",
+  "accentColor": "#f59e0b",
+  "bgPrimary": "#0a0a0c",
+  "logos": {
+    "SHOPEE": "https://raw.githubusercontent.com/opus-io/Tech-Link/main/public/logos/shopee.png",
+    "TOKOPEDIA": "https://raw.githubusercontent.com/opus-io/Tech-Link/main/public/logos/tokopedia.png",
+    "TIKTOK": "https://raw.githubusercontent.com/opus-io/Tech-Link/main/public/logos/tiktok.png"
+  }
+}

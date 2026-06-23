@@ -1,9 +1,3 @@
-/**
- * Data produk yang ditampilkan di halaman Linktree Affiliate.
- * Data dikelola via Admin Panel (/admin) - JSON files di /content/products/
- */
-
-// Dynamic import semua JSON files dari content/products/
 const productModules = import.meta.glob("../../content/products/*.json", {
   eager: true,
   import: "default",
@@ -32,9 +26,15 @@ export const products: Product[] = Object.values(productModules).map(
   })
 );
 
-// Logo mapping untuk tag platform (raw GitHub URLs - reliable)
+// Logo mapping dari site config (fallback ke raw GitHub URLs)
+let configLogos: Record<string, string> = {};
+try {
+  const config = await import("../../content/config.json", { assert: { type: "json" } });
+  configLogos = (config as any).default?.logos || {};
+} catch {}
+
 export const logoMap: Record<string, string> = {
-  SHOPEE: "https://raw.githubusercontent.com/opus-io/Tech-Link/main/public/logos/shopee.png",
-  TOKOPEDIA: "https://raw.githubusercontent.com/opus-io/Tech-Link/main/public/logos/tokopedia.png",
-  TIKTOK: "https://raw.githubusercontent.com/opus-io/Tech-Link/main/public/logos/tiktok.png",
+  SHOPEE: configLogos.SHOPEE || "https://raw.githubusercontent.com/opus-io/Tech-Link/main/public/logos/shopee.png",
+  TOKOPEDIA: configLogos.TOKOPEDIA || "https://raw.githubusercontent.com/opus-io/Tech-Link/main/public/logos/tokopedia.png",
+  TIKTOK: configLogos.TIKTOK || "https://raw.githubusercontent.com/opus-io/Tech-Link/main/public/logos/tiktok.png",
 };

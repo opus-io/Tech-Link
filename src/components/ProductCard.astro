@@ -1,7 +1,4 @@
 ---
-/**
- * ProductCard — Kartu produk dengan featured animation, rating, sold, logo tags.
- */
 import LinkButton from "./LinkButton.astro";
 import { logoMap } from "../data/products";
 
@@ -16,20 +13,28 @@ const isFeatured = product.variant === "featured";
 const delay = index * 100 + 200;
 const hasMultipleLinks = product.links.length > 1;
 
-/* Rating stars */
 const fullStars = Math.floor(product.rating || 0);
 const hasHalf = (product.rating || 0) - fullStars >= 0.5;
 
-/* Format sold count */
 function formatSold(val?: number): string {
   if (!val) return "";
   if (val >= 1000) return (val / 1000).toFixed(0) + "rb";
   return val.toString();
 }
 
-/* Platform logo */
 function getPlatformLogo(tag: string): string {
   return logoMap[tag.toUpperCase()] || "";
+}
+
+// Match link label to platform tag for logo
+function getLogoForLink(label: string): { logo: string; tag: string } {
+  const upper = label.toUpperCase();
+  for (const tag of product.tags) {
+    if (upper.includes(tag)) {
+      return { logo: getPlatformLogo(tag), tag };
+    }
+  }
+  return { logo: "", tag: "" };
 }
 
 const variantClasses = isFeatured
@@ -90,7 +95,6 @@ const titleClasses = isFeatured
           {product.title}
         </h2>
 
-        <!-- Rating & Sold -->
         {(product.rating || product.sold) && (
           <div class="flex items-center gap-[8px] mt-[5px]">
             {product.rating && (
@@ -107,14 +111,12 @@ const titleClasses = isFeatured
           </div>
         )}
 
-        <!-- Short Description -->
         {product.shortDesc && (
           <p class="text-[11px] font-robotic text-gray-500 mt-[5px] leading-snug line-clamp-1">
             {product.shortDesc}
           </p>
         )}
 
-        <!-- Tags as Logo -->
         {product.tags.length > 0 && (
           <div class="flex gap-[6px] mt-[7px] flex-wrap">
             {product.tags.map((tag) => {
@@ -167,7 +169,6 @@ const titleClasses = isFeatured
         {product.description}
       </p>
 
-      <!-- Links section -->
       <div class="flex flex-col gap-[13px]">
         {
           hasMultipleLinks ? (
@@ -177,19 +178,16 @@ const titleClasses = isFeatured
               </span>
               <div class="flex gap-[13px] flex-wrap">
                 {product.links.map((link) => {
-                  const tagMatch = product.tags.find(
-                    (t) => link.label.toUpperCase().includes(t)
-                  );
-                  const logoPath = tagMatch ? getPlatformLogo(tagMatch) : "";
+                  const { logo, tag } = getLogoForLink(link.label);
                   return (
                     <a
                       href={link.href}
                       class="flex items-center gap-[8px] bg-[#141414] border border-gray-800 hover:border-gray-600 px-[13px] py-[8px] rounded-sm transition-colors"
                     >
-                      {logoPath && (
+                      {logo && (
                         <img
-                          src={logoPath}
-                          alt=""
+                          src={logo}
+                          alt={tag}
                           class="w-[18px] h-[18px] object-contain"
                         />
                       )}
@@ -227,7 +225,6 @@ const titleClasses = isFeatured
         return;
       }
 
-      // Event handlers dengan cleanup
       const handleFastLaneClick = () => {
         if (!card.classList.contains("is-open")) {
           window.open(defaultUrl, "_blank", "noopener,noreferrer");
@@ -252,25 +249,21 @@ const titleClasses = isFeatured
       fastLane.addEventListener("click", handleFastLaneClick);
       toggleBtn.addEventListener("click", handleToggleClick);
 
-      // Cleanup function untuk mencegah memory leak
       const cleanup = () => {
         fastLane.removeEventListener("click", handleFastLaneClick);
         toggleBtn.removeEventListener("click", handleToggleClick);
       };
 
-      // Store cleanup di card element untuk later cleanup
       (card as any)._cleanup = cleanup;
     });
   }
 
-  // Initialize on DOMContentLoaded
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", initProductCard);
   } else {
     initProductCard();
   }
 
-  // Cleanup on view transition (untuk Astro)
   document.addEventListener("astro:before-swap", () => {
     document.querySelectorAll<HTMLElement>(".product-card").forEach((card) => {
       if ((card as any)._cleanup) {

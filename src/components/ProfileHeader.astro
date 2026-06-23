@@ -1,7 +1,15 @@
 ---
-/**
- * ProfileHeader — Header profil dengan avatar & nama akun.
- */
+let siteName = "@artifak.tech";
+let tagline = "CURATED DESK SETUPS.";
+let avatarUrl = "https://images.unsplash.com/photo-1632292224971-0d45778b3af9?auto=format&fit=crop&w=150&h=150";
+
+try {
+  const config = await import("../../content/config.json", { assert: { type: "json" } });
+  const cfg = (config as any).default || config;
+  if (cfg.siteName) siteName = cfg.siteName;
+  if (cfg.tagline) tagline = cfg.tagline;
+  if (cfg.avatarUrl) avatarUrl = cfg.avatarUrl;
+} catch {}
 ---
 
 <header class="flex items-center gap-[21px] mb-[34px]">
@@ -9,8 +17,8 @@
     class="w-[89px] h-[89px] rounded-lg overflow-hidden shrink-0 shadow-[0_0_21px_rgba(245,158,11,0.15)] border border-[#333333] bg-[#121212] relative z-10 hud-corners p-1"
   >
     <img
-      src="https://images.unsplash.com/photo-1632292224971-0d45778b3af9?auto=format&fit=crop&w=150&h=150"
-      alt="Profile avatar for @artifak.tech"
+      src={avatarUrl}
+      alt={`Profile avatar for ${siteName}`}
       loading="lazy"
       decoding="async"
       class="w-full h-full object-cover grayscale-[30%] rounded-md"
@@ -20,10 +28,10 @@
     <h1
       class="text-[24px] font-robotic tracking-wider text-gray-100 leading-none"
     >
-      [ <span class="text-white">@artifak.tech</span> ]
+      [ <span class="text-white">{siteName}</span> ]
     </h1>
     <p class="text-[14px] font-robotic text-gray-500 mt-[10px] leading-snug">
-      <span class="text-amber-500" aria-label="icon">>></span> CURATED DESK SETUPS.
+      <span class="text-amber-500" aria-label="icon">>></span> {tagline}
     </p>
   </div>
 </header>
