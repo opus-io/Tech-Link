@@ -290,6 +290,21 @@
           </div>
           <button class="btn btn-primary" onclick="saveConfig()">SAVE CONFIG</button>
         </div>
+
+        <div class="config-section">
+          <h3>Cover / Diagnostic Text</h3>
+          <p style="font-size:11px;color:var(--text2);margin-bottom:13px">
+            Teks yang muncul di animasi canvas cover. Tiap baris akan diketik bergantian.
+          </p>
+          <div class="field full">
+            <label>Diagnostic Lines (satu per baris)</label>
+            <textarea id="cfg-diagnosticLines" rows="5" placeholder="> INIT: PRODUCT DIRECTORY..."></textarea>
+          </div>
+          <div class="field full">
+            <label>Diagnostic Tags (sidebar kiri, satu per baris)</label>
+            <textarea id="cfg-diagnosticTags" rows="4" placeholder="SYS.V.2.0.4 // ONLINE"></textarea>
+          </div>
+        </div>
       </div>
 
       <!-- TAB: Logos -->
@@ -533,15 +548,21 @@
       $('cfg-avatarUrl').value = config.avatarUrl || '';
       $('cfg-accentColor').value = config.accentColor || '#f59e0b';
       $('cfg-bgPrimary').value = config.bgPrimary || '#0a0a0c';
+      $('cfg-diagnosticLines').value = (config.diagnosticLines || []).join('\n');
+      $('cfg-diagnosticTags').value = (config.diagnosticTags || []).join('\n');
     }
 
     async function saveConfig() {
+      const diagLines = $('cfg-diagnosticLines').value.split('\n').map(s => s.trim()).filter(Boolean);
+      const diagTags = $('cfg-diagnosticTags').value.split('\n').map(s => s.trim()).filter(Boolean);
       const updated = {
         siteName: $('cfg-siteName').value.trim(),
         tagline: $('cfg-tagline').value.trim(),
         avatarUrl: $('cfg-avatarUrl').value.trim(),
         accentColor: $('cfg-accentColor').value.trim(),
         bgPrimary: $('cfg-bgPrimary').value.trim(),
+        diagnosticLines: diagLines,
+        diagnosticTags: diagTags,
         logos: config.logos || {}
       };
       try {
