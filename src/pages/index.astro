@@ -21,10 +21,56 @@ const sortedProducts = [...products].sort((a, b) => {
 
     <SectionHeading title="System_Links //" />
 
-    <main class="flex flex-col gap-[21px]">
+    <div class="relative mb-[21px]">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Cari produk..."
+        class="w-full px-[13px] py-[10px] bg-[#121212] border border-[#333] rounded-[8px] text-[13px] font-robotic text-gray-200 placeholder-gray-500 focus:outline-none focus:border-amber-500 transition-colors"
+      />
+      <svg
+        class="absolute right-[13px] top-1/2 -translate-y-1/2 w-[16px] h-[16px] text-gray-500 pointer-events-none"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+    </div>
+
+    <main class="flex flex-col gap-[21px]" id="productList">
       {sortedProducts.map((product, index) => (
         <ProductCard product={product} index={index} />
       ))}
     </main>
+
+    <p id="searchEmpty" class="text-center text-gray-500 text-[13px] py-[48px] hidden">
+      Tidak ada produk yang cocok.
+    </p>
   </div>
 </BaseLayout>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  const productList = document.getElementById('productList');
+  const emptyMsg = document.getElementById('searchEmpty');
+
+  if (searchInput && productList) {
+    searchInput.addEventListener('input', function() {
+      const q = this.value.toLowerCase().trim();
+      const cards = productList.querySelectorAll('.product-card');
+      let visibleCount = 0;
+
+      cards.forEach((card) => {
+        const text = card.textContent.toLowerCase();
+        const match = !q || text.includes(q);
+        card.style.display = match ? '' : 'none';
+        if (match) visibleCount++;
+      });
+
+      if (emptyMsg) {
+        emptyMsg.classList.toggle('hidden', visibleCount > 0 || !q);
+      }
+    });
+  }
+</script>
