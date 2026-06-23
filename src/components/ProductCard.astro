@@ -1,5 +1,4 @@
 ---
-import LinkButton from "./LinkButton.astro";
 import { logoMap } from "../data/products";
 
 interface Props {
@@ -11,7 +10,6 @@ const { product, index = 0 } = Astro.props;
 
 const isFeatured = product.variant === "featured";
 const delay = index * 100 + 200;
-const hasMultipleLinks = product.links.length > 1;
 
 const fullStars = Math.floor(product.rating || 0);
 const hasHalf = (product.rating || 0) - fullStars >= 0.5;
@@ -42,8 +40,8 @@ const variantClasses = isFeatured
   : "border border-gray-800 hover:border-gray-600 shadow-sm";
 
 const titleClasses = isFeatured
-  ? "text-gray-200 group-hover:text-amber-400"
-  : "text-gray-300 group-hover:text-white";
+  ? "text-gray-200"
+  : "text-gray-300";
 ---
 
 <div
@@ -66,14 +64,14 @@ const titleClasses = isFeatured
   <div
     class="p-[21px] flex items-center justify-between gap-[13px] relative z-10"
   >
-    <div class="fast-lane flex items-center gap-[13px] flex-1 cursor-pointer">
-      <div class="relative border border-gray-700 rounded-lg p-0.5 bg-[#1A1A1A]">
+    <div class="fast-lane flex items-center gap-[13px] flex-1 cursor-pointer group/fast">
+      <div class="relative border border-gray-700 rounded-lg p-0.5 bg-[#1A1A1A] transition-all duration-300 group-hover/fast:border-amber-500/40 group-hover/fast:shadow-[0_0_13px_rgba(245,158,11,0.15)]">
         <img
           src={product.image}
           alt={product.imageAlt}
           loading="lazy"
           decoding="async"
-          class="w-[55px] h-[55px] object-cover rounded-md opacity-90 transition-opacity group-hover:opacity-100"
+          class="w-[55px] h-[55px] object-cover rounded-md opacity-90 transition-all duration-300 group-hover/fast:opacity-100 group-hover/fast:scale-[1.04]"
         />
       </div>
       <div class="flex-1 min-w-0">
@@ -90,7 +88,7 @@ const titleClasses = isFeatured
           )
         }
         <h2
-          class={`text-[15px] font-bold transition-colors leading-tight ${titleClasses}`}
+          class={`text-[15px] font-bold transition-colors leading-tight group-hover/fast:text-amber-400/80 ${titleClasses}`}
         >
           {product.title}
         </h2>
@@ -170,41 +168,31 @@ const titleClasses = isFeatured
       </p>
 
       <div class="flex flex-col gap-[13px]">
-        {
-          hasMultipleLinks ? (
-            <>
-              <span class="text-[10px] font-robotic text-gray-500 tracking-wider uppercase">
-                Tersedia di :
-              </span>
-              <div class="flex gap-[13px] flex-wrap">
-                {product.links.map((link) => {
-                  const { logo, tag } = getLogoForLink(link.label);
-                  return (
-                    <a
-                      href={link.href}
-                      class="flex items-center gap-[8px] bg-[#141414] border border-gray-800 hover:border-gray-600 px-[13px] py-[8px] rounded-sm transition-colors"
-                    >
-                      {logo && (
-                        <img
-                          src={logo}
-                          alt={tag}
-                          class="w-[18px] h-[18px] object-contain"
-                        />
-                      )}
-                      <span class="text-[11px] font-robotic text-gray-300">
-                        {link.label.replace(/ACCESS \/\//, "").trim()}
-                      </span>
-                    </a>
-                  );
-                })}
-              </div>
-            </>
-          ) : (
-            product.links.map((link, idx) => (
-              <LinkButton label={link.label} href={link.href} color={link.color} index={idx} />
-            ))
-          )
-        }
+        <span class="text-[10px] font-robotic text-gray-500 tracking-wider uppercase">
+          Tersedia di :
+        </span>
+        <div class="flex gap-[13px] flex-wrap">
+          {product.links.map((link) => {
+            const { logo, tag } = getLogoForLink(link.label);
+            return (
+              <a
+                href={link.href}
+                class="flex items-center gap-[8px] bg-[#141414] border border-gray-800 hover:border-gray-600 px-[13px] py-[8px] rounded-sm transition-colors"
+              >
+                {logo && (
+                  <img
+                    src={logo}
+                    alt={tag}
+                    class="w-[18px] h-[18px] object-contain"
+                  />
+                )}
+                <span class="text-[11px] font-robotic text-gray-300">
+                  {link.label.replace(/ACCESS \/\//, "").trim()}
+                </span>
+              </a>
+            );
+          })}
+        </div>
       </div>
     </div>
   </div>
