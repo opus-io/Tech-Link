@@ -5,18 +5,18 @@
   /* Colors */
   --color-bg-primary: #0a0a0c;
   --color-bg-secondary: #121212;
-  --color-bg-tertiary: #1A1A1A;
+  --color-bg-tertiary: #1a1a1a;
   --color-bg-quaternary: #141414;
-  --color-bg-dark: #0F0F0F;
+  --color-bg-dark: #0f0f0f;
 
-  --color-border-primary: #2A2A2A;
+  --color-border-primary: #2a2a2a;
   --color-border-secondary: #333333;
   --color-border-light: rgba(255, 255, 255, 0.05);
 
   --color-text-primary: #ffffff;
-  --color-text-secondary: #E5E5E5;
-  --color-text-tertiary: #A1A1AA;
-  --color-text-muted: #71717A;
+  --color-text-secondary: #e5e5e5;
+  --color-text-tertiary: #a1a1aa;
+  --color-text-muted: #71717a;
 
   --color-accent-amber: #f59e0b;
   --color-accent-green: #22c55e;
@@ -87,12 +87,18 @@
 /* Glow ring for featured cards */
 .card-featured-glow {
   border: 1px solid rgba(245, 158, 11, 0.3);
-  box-shadow: 0 0 15px rgba(245, 158, 11, 0.15), 0 4px 24px rgba(0, 0, 0, 0.4);
-  animation: card-entrance 0.6s ease-out both, featured-glitch 0.3s ease-in-out 0.6s;
+  box-shadow:
+    0 0 15px rgba(245, 158, 11, 0.15),
+    0 4px 24px rgba(0, 0, 0, 0.4);
+  animation:
+    card-entrance 0.6s ease-out both,
+    featured-glitch 0.3s ease-in-out 0.6s;
 }
 
 .card-featured-glow:hover {
-  box-shadow: 0 0 30px rgba(245, 158, 11, 0.35), 0 4px 24px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 0 30px rgba(245, 158, 11, 0.35),
+    0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
 /* Pulsing glow overlay on featured */
@@ -112,7 +118,8 @@
 
 /* Keyframes */
 @keyframes glow-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.6;
   }
   50% {
